@@ -1,10 +1,35 @@
 public class Integrator {
 
+    private double deltaTime;
+
+    // Gear predictor coefficients
+    private final double[] gearAlphas = new double[]{3.0/16, 251.0/360, 1, 11.0/18, 1.0/6, 1.0/60};
+
+    // Gear predictor delta powers and factorials for reduced computation
+    private final double[] gearDeltaFactorials;
+
+    // Gear predictor derivatives
+    private double gearDerivatives[];
+
+    public Integrator(Particle p, double deltaTime){
+        this.deltaTime = deltaTime;
+        this.gearDeltaFactorials = new double[]{1, deltaTime, Math.pow(deltaTime, 2)/2, Math.pow(deltaTime, 3)/6, Math.pow(deltaTime, 4)/24, Math.pow(deltaTime, 5)/120};
+        this.gearDerivatives = this.initGearDerivatives(this.k, p);
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    //                                  ANALYTICAL
+    /////////////////////////////////////////////////////////////////////////////////////
+
     public double analyticalSolution(double time, double gamma, double k, double mass) {
         double exponential = Math.exp(-(gamma / (2*mass)) * time);
         double cosine = Math.cos(Math.pow((k/mass - (gamma*gamma)/(4*(mass*mass))), 0.5) * time);
         return exponential * cosine;
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    //                                  BEEMAN
+    /////////////////////////////////////////////////////////////////////////////////////
 
     public void beeman(Particle p, Force f, double dt) {
         /* Calculating force components */
@@ -37,5 +62,25 @@ public class Integrator {
 
     private double beemanVelocityPrediction(double v, double a, double aPrev, double aFuture, double dt) {
         return v + ((1.0/3.0)*aFuture + (5.0/6.0)*a + (1.0/6.0)*aPrev) * dt;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    //                              GEAR PREDICTOR CORRECTOR
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    private double[] initGearDerivatives(double k, Particle p){
+        double[] derivatives = new double[6];
+        derivatives[0] = p.getX();
+        derivatives[1] = p.getVx();
+        derivatives[2] = (- k / p.getMass()) * p.getX();
+        // FIXME: ver si hay que poner 0 o como dice el PPT en pag 29
+        derivatives[3] = 0;
+        derivatives[4] = 0;
+        derivatives[5] = 0;
+        return derivatives;
+    }
+
+    public void gearPredictorCorrector(Particle p, double dt){
+
     }
 }
