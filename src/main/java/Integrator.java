@@ -70,9 +70,9 @@ public class Integrator {
 
     private double[] initGearDerivatives(double k, Particle p){
         double[] derivatives = new double[6];
-        derivatives[0] = p.getX();
-        derivatives[1] = p.getVx();
-        derivatives[2] = (- k / p.getMass()) * p.getX();
+        derivatives[0] = p.getX();  // Position
+        derivatives[1] = p.getVx(); // Velocity
+        derivatives[2] = (- k / p.getMass()) * p.getX();    // Acceleration
         // FIXME: ver si hay que poner 0 o como dice el PPT en pag 29
         derivatives[3] = 0;
         derivatives[4] = 0;
@@ -80,7 +80,37 @@ public class Integrator {
         return derivatives;
     }
 
-    public void gearPredictorCorrector(Particle p, double dt){
+    private double[] makeGearPredictions(double[] derivatives){
+        // Cloning derivatives to make the predictions
+        double[] predictions = derivatives.clone();
 
+        for (int i = 0, partialSum = 0; i < predictions.length; i++){
+            for (int j = 1; j + i < predictions.length; j++){
+                partialSum += (derivatives[j + i] * this.gearDeltaFactorials[j]);
+            }
+            predictions[i] += partialSum;
+        }
+
+        return predictions;
+    }
+
+    public void gearPredictorCorrector(Particle p, Force f, double dt){
+        // Making the predictions
+        double[] predictions = this.makeGearPredictions(this.gearDerivatives);
+
+        // FIXME: evaluar bien la fuerza
+        f.evaluate();
+
+        // Calculated acceleration - predicted acceleration
+        double deltaA = (f.getFx() / p.getMass()) - predictions[2];
+
+        // DeltaA * dt^2 / 2!
+        double deltaR2 = deltaA * this.gearDeltaFactorials[2];
+
+        // Correcting the values
+        // corrected_value_q = predicted_value_q + alpha_q * deltaR2 * q! / dt^q
+        for (int i = 0; i < this.gearDerivatives.length; i++){
+            this.gearDerivatives[i] = predictions[i] + this.gearAlphas[i] * deltaR2 * (1 / this.gearDeltaFactorials[i]);
+        }
     }
 }
