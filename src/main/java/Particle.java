@@ -13,44 +13,52 @@ public class Particle implements Comparable<Particle> {
     private double y;
     private double prevX;
     private double prevY;
-    private Double futureX;
-    private Double futureY;
+    private Double futureX = null;
+    private Double futureY = null;
 
     /* Velocities */
     private double vx;
     private double vy;
     private double prevVx;
     private double prevVy;
-    private Double futureVx;
-    private Double futureVy;
+    private Double futureVx = null;
+    private Double futureVy = null;
 
     /* Acceleration */
     private double ax;
     private double ay;
     private double prevAx;
     private double prevAy;
-    private Double futureAx;
-    private Double futureAy;
+    private Double futureAx = null;
+    private Double futureAy = null;
 
     //////////////////////////////////////////////////////////////////////////////////////////
     //                                        CONSTRUCTORS
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    public Particle(int id, double x, double y, double vx, double vy, double radius, double mass) {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
+    public Particle (
+            int id, double radius, double mass,
+            double x, double y, double prevX, double prevY,
+            double vx, double vy, double prevVx, double prevVy,
+            double ax, double ay, double prevAx, double prevAy
+    ) {
+        this.id     = id;
         this.radius = radius;
-        this.mass = mass;
+        this.mass   = mass;
+        this.x      = x;
+        this.y      = y;
+        this.prevX  = prevX;
+        this.prevY  = prevY;
+        this.vx     = vx;
+        this.vy     = vy;
+        this.prevVx = prevVx;
+        this.prevVy = prevVy;
+        this.ax     = ax;
+        this.ay     = ay;
+        this.prevAx = prevAx;
+        this.prevAy = prevAy;
     }
 
-    public Particle(int id, double radius, double mass) {
-        this.id = id;
-        this.radius = radius;
-        this.mass = mass;
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////////
     //                                        GETTERS
