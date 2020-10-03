@@ -65,6 +65,33 @@ public class Integrator {
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
+    //                              EULER PREDICTOR CORRECTOR
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    private double[] eulerPrediction(Particle p, Force f, double dt) {
+        double predictedX = p.getX() + p.getVx() * dt;
+        double predictedY = p.getY() + p.getVy() * dt;
+
+        double predictedVx = p.getVx() + p.getAx() * dt;
+        double predictedVy = p.getVy() + p.getAy() * dt;
+
+        f.evaluate(predictedX, predictedY, predictedVx, predictedVy);
+
+        double predictedAx = f.getFx() / p.getMass();
+        double predictedAy = f.getFy() / p.getMass();
+
+        double[] calculations = new double[4];
+        calculations[0] = p.getVx() + predictedAx * dt;
+        calculations[1] = p.getVy() + predictedAy * dt;
+
+        calculations[2] = p.getX() + calculations[0] * dt;
+        calculations[3] = p.getY() + calculations[1] * dt;
+
+        return calculations;        
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////////////
     //                              GEAR PREDICTOR CORRECTOR
     /////////////////////////////////////////////////////////////////////////////////////
 

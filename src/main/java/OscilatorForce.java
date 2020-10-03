@@ -1,19 +1,17 @@
 public class OscilatorForce implements Force {
-    private Particle particle;
     private double gamma;
     private double k;
     private double fx;
     private double fy;
 
-    OscilatorForce(Particle p, double gamma, double k) {
-        this.particle = p;
+    OscilatorForce(double gamma, double k) {
         this.gamma = gamma;
         this.k = k;
     }
 
     @Override
-    public void evaluate() {
-        this.fx = -(this.k * this.particle.getX()) - (this.gamma * this.particle.getVx());
+    public void evaluate(double x, double y, double vx, double vy) {
+        this.fx = -(this.k * x) - (this.gamma * vx);
         this.fy = 0;
     }
 
@@ -24,4 +22,5 @@ public class OscilatorForce implements Force {
     public double getFy() {
         return fy;
     }
+
 }
