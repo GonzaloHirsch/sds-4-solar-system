@@ -20,39 +20,36 @@ public class Main {
             System.exit(1);
         }
 
-        // Creating the brownian motion instance
-        BrownianMotion bm = new BrownianMotion(ConfigurationParser.areaLength, ConfigurationParser.particles);
-
-        // Variable for output particles
-        Collection<Particle> stepOutput;
-
-        // Variables for the iteration
-        double limitTime = OptionsParser.maxTime;
-        double currentTime = 0;
-        boolean mainHitWall = false;
-
-        // Simulating multiple steps
-        while (currentTime < limitTime && !mainHitWall){
-            // Step simulation
-            stepOutput = bm.simulateUntilCollision();
-
-            // Updating the variables for conditions
-            currentTime = bm.getElapsedTime();
-            mainHitWall = bm.mainHasHitWall();
-
-            // Write the output
-            GenerateOutputFile(stepOutput, currentTime);
+        // Determine what to run
+        switch (OptionsParser.option){
+            case RUN_ANALYTICAL:
+                runAnalytic();
+                break;
+            case RUN_NUMERICAL:
+                runNumerical();
+                break;
+            case RUN_SIMULATION:
+                runSimulation();
+                break;
         }
 
         long endTime = Instant.now().toEpochMilli();
 
         long total = endTime - startTime;
 
-        if (mainHitWall){
-            System.out.format("Total Time %d millis - Main particle wall collision in %f seconds\n", total, currentTime);
-        } else {
-            System.out.format("Total Time %d millis - Time limit of %f reached\n", total, limitTime);
-        }
+        System.out.format("Total Time %d millis\n", total);
+    }
+
+    private static void runAnalytic(){
+
+    }
+
+    private static void runNumerical(){
+
+    }
+
+    private static void runSimulation(){
+
     }
 
     private static void GenerateOutputFile(Collection<Particle> particles, double time) {
