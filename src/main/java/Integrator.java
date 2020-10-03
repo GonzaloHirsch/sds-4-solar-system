@@ -11,10 +11,10 @@ public class Integrator {
     // Gear predictor derivatives
     private double gearDerivatives[];
 
-    public Integrator(Particle p, double deltaTime){
+    public Integrator(Particle p, double deltaTime, double k){
         this.deltaTime = deltaTime;
         this.gearDeltaFactorials = new double[]{1, deltaTime, Math.pow(deltaTime, 2)/2, Math.pow(deltaTime, 3)/6, Math.pow(deltaTime, 4)/24, Math.pow(deltaTime, 5)/120};
-        this.gearDerivatives = this.initGearDerivatives(this.k, p);
+        this.gearDerivatives = this.initGearDerivatives(k, p);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
