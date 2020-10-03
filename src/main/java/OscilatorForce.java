@@ -2,7 +2,6 @@ public class OscilatorForce implements Force {
     private double gamma;
     private double k;
     private double fx;
-    private double fy;
 
     OscilatorForce(double gamma, double k) {
         this.gamma = gamma;
@@ -12,7 +11,11 @@ public class OscilatorForce implements Force {
     @Override
     public void evaluate(double x, double y, double vx, double vy) {
         this.fx = -(this.k * x) - (this.gamma * vx);
-        this.fy = 0;
+    }
+
+    @Override
+    public void evaluate(double x, double vx) {
+        this.fx = -(this.k * x) - (this.gamma * vx);
     }
 
     public double getFx() {
@@ -20,7 +23,7 @@ public class OscilatorForce implements Force {
     }
 
     public double getFy() {
-        return fy;
+        return 0.0;
     }
 
 }

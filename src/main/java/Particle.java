@@ -9,26 +9,26 @@ public class Particle implements Comparable<Particle> {
     private double mass;
 
     /* Positions */
-    private double x;
-    private double y;
-    private double prevX;
-    private double prevY;
+    private double x = 0.0;
+    private double y = 0.0;
+    private double prevX = 0.0;
+    private double prevY = 0.0;
     private Double futureX = null;
     private Double futureY = null;
 
     /* Velocities */
-    private double vx;
-    private double vy;
-    private double prevVx;
-    private double prevVy;
+    private double vx = 0.0;
+    private double vy = 0.0;
+    private double prevVx = 0.0;
+    private double prevVy = 0.0;
     private Double futureVx = null;
     private Double futureVy = null;
 
     /* Acceleration */
-    private double ax;
-    private double ay;
-    private double prevAx;
-    private double prevAy;
+    private double ax = 0.0;
+    private double ay = 0.0;
+    private double prevAx = 0.0;
+    private double prevAy = 0.0;
     private Double futureAx = null;
     private Double futureAy = null;
 
@@ -202,6 +202,14 @@ public class Particle implements Comparable<Particle> {
         this.futureVx = vy;
     }
 
+    public void setAx(double ax) {
+        this.ax = ax;
+    }
+
+    public void setAy(double ay) {
+        this.ay = ay;
+    }
+
     public void setFutureAx(double ax) {
         this.futureAx = ax;
     }
@@ -241,6 +249,15 @@ public class Particle implements Comparable<Particle> {
 
     public int compareTo(Particle particle) {
         return Integer.compare(id, particle.getId());
+    }
+
+    public void setPrevValues(final double[] values) {
+        this.prevAx = values[0];
+        this.prevAy = values[1];
+        this.prevVx = values[2];
+        this.prevVy = values[3];
+        this.prevX  = values[4];
+        this.prevY  = values[5];
     }
 
     public void update() {

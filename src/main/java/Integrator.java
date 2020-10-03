@@ -68,7 +68,7 @@ public class Integrator {
     //                              EULER PREDICTOR CORRECTOR
     /////////////////////////////////////////////////////////////////////////////////////
 
-    private double[] eulerPrediction(Particle p, Force f, double dt) {
+    public double[] eulerPrediction(Particle p, Force f, double dt) {
         double predictedX = p.getX() + p.getVx() * dt;
         double predictedY = p.getY() + p.getVy() * dt;
 
@@ -77,15 +77,14 @@ public class Integrator {
 
         f.evaluate(predictedX, predictedY, predictedVx, predictedVy);
 
-        double predictedAx = f.getFx() / p.getMass();
-        double predictedAy = f.getFy() / p.getMass();
+        double[] calculations = new double[6];
 
-        double[] calculations = new double[4];
-        calculations[0] = p.getVx() + predictedAx * dt;
-        calculations[1] = p.getVy() + predictedAy * dt;
-
-        calculations[2] = p.getX() + calculations[0] * dt;
-        calculations[3] = p.getY() + calculations[1] * dt;
+        calculations[0] = f.getFx() / p.getMass();          // Ax(t+dt)
+        calculations[1] = f.getFy() / p.getMass();          // Ay(t+dt)
+        calculations[2] = p.getVx() + calculations[0] * dt; // Vx(t+dt)
+        calculations[3] = p.getVy() + calculations[1] * dt; // Vy(t+dt)
+        calculations[4] = p.getX()  + calculations[2] * dt; // X(t+dt)
+        calculations[5] = p.getY()  + calculations[3] * dt; // Y(t+dt)
 
         return calculations;        
     }
