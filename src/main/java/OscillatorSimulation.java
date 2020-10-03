@@ -1,11 +1,64 @@
 public class OscillatorSimulation {
 
-    private double mass  = 70; // kg
-    private double k     = Math.pow(10, 4); // N/m
-    private double gamma = 100; // kg/s
-    private double tf    = 5; // s
+    private static final double MASS  = 70; // kg
+    private static final double K = Math.pow(10, 4); // N/m
+    private static final double GAMMA = 100; // kg/s
+    private final double tf;
+    private final double dt;
+    private final int tm;
+    private final double[][] results;
+    private final Integrator integrator;
+    private static final Particle PARTICLE = new Particle(0, 10, MASS);
 
-    OscillatorSimulation() { }
+    private double totalTime = 0;
 
+    public OscillatorSimulation(double tf, double dt, int tm) {
+        this.tf = tf;
+        this.dt = dt;
+        this.tm = tm;
 
+        // Creating an instance of the integrator
+        this.integrator = new Integrator(PARTICLE, this.dt, K);
+
+        // Creating the structure for results, we store every tm*dt results
+        int rows = (int) Math.floor(this.tf/(this.tm * this.dt));
+        this.results = new double[rows][5];
+    }
+
+    public double[][] runAnalytical(){
+        double position;
+        int index = 0;
+
+        // In this case we can skip the dt we don't want
+        while (this.totalTime <= this.tf){
+            position = this.integrator.analyticalSolution(this.totalTime, GAMMA, K, MASS);
+            this.results[index++][1] = position;
+            this.totalTime += (this.tm * this.dt);
+        }
+        return this.results;
+    }
+
+    public double[][] runBeeman(){
+        while (totalTime <= this.tf){
+
+            totalTime += this.dt;
+        }
+        return this.results;
+    }
+
+    public double[][] runVerlet(){
+        while (totalTime <= this.tf){
+
+            totalTime += this.dt;
+        }
+        return this.results;
+    }
+
+    public double[][] runGearPredictorCorrector(){
+        while (totalTime <= this.tf){
+
+            totalTime += this.dt;
+        }
+        return this.results;
+    }
 }

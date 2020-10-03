@@ -4,10 +4,14 @@ import org.apache.commons.cli.*;
 public class OptionsParser {
     protected static RunOptions option;
     protected static Double delta;
+    protected static Double totalTime;
+    protected static Integer timeMultiplicator;
     protected static String dynamicFile;
     protected static String staticFile;
 
     private static final String PARAM_DT = "dt";
+    private static final String PARAM_TF = "tf";
+    private static final String PARAM_TM = "tm";
     private static final String PARAM_RA = "ra";
     private static final String PARAM_RN = "rn";
     private static final String PARAM_RS = "rs";
@@ -22,6 +26,8 @@ public class OptionsParser {
     private static Options GenerateOptions() {
         Options options = new Options();
         options.addOption(PARAM_DT, "delta", true, "Delta of time to be used");
+        options.addOption(PARAM_TF, "total_time", true, "Total time to be considered");
+        options.addOption(PARAM_TM, "time_multiplicator", true, "Time multiplicator for output");
         options.addOption(PARAM_RA, "run_analytical", false, "Run the analytical solution");
         options.addOption(PARAM_RN, "run_numerical", false, "Run the numerical solution");
         options.addOption(PARAM_RS, "run_simulation", false, "Run the simulation");
@@ -63,6 +69,22 @@ public class OptionsParser {
             }
             // Retrieving the amount of "time" to iterate with
             delta = Double.parseDouble(cmd.getOptionValue(PARAM_DT));
+
+            // Checking if the total time is present
+            if (!cmd.hasOption(PARAM_TF)){
+                System.out.println("A total time must be specified");
+                System.exit(1);
+            }
+            // Retrieving the total time to be iterated
+            totalTime = Double.parseDouble(cmd.getOptionValue(PARAM_TF));
+
+            // Checking if the time multiplicator is present
+            if (!cmd.hasOption(PARAM_TM)){
+                System.out.println("A time multiplicator must be specified");
+                System.exit(1);
+            }
+            // Retrieving the total time to be iterated
+            timeMultiplicator = Integer.parseInt(cmd.getOptionValue(PARAM_TM));
 
             // Checking if the files were present
             if (!cmd.hasOption(PARAM_SF) | !cmd.hasOption(PARAM_DF)){

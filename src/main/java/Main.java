@@ -23,10 +23,10 @@ public class Main {
         // Determine what to run
         switch (OptionsParser.option){
             case RUN_ANALYTICAL:
-                runAnalytic();
+                runAnalytic(OptionsParser.totalTime);
                 break;
             case RUN_NUMERICAL:
-                runNumerical();
+                runNumerical(OptionsParser.totalTime);
                 break;
             case RUN_SIMULATION:
                 runSimulation();
@@ -40,12 +40,12 @@ public class Main {
         System.out.format("Total Time %d millis\n", total);
     }
 
-    private static void runAnalytic(){
-
+    private static void runAnalytic(double tf){
+        OscillatorSimulation os = new OscillatorSimulation(tf);
     }
 
-    private static void runNumerical(){
-
+    private static void runNumerical(double tf){
+        OscillatorSimulation os = new OscillatorSimulation(tf);
     }
 
     private static void runSimulation(){
