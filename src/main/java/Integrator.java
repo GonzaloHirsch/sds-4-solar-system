@@ -11,11 +11,13 @@ public class Integrator {
         return exponential * cosine;
     }
 
-    public void beeman(Particle p, double dt) {
+    public void beeman(Particle p, Force f, double dt) {
+        /* Calculating force components */
+        f.evaluate();
 
         /* Calculating future accelerations TODO -> algo con la fuerza */
-        double predictedAx = 0.0;
-        double predictedAy = 0.0;
+        double predictedAx = f.getFx() / p.getMass();
+        double predictedAy = f.getFy() / p.getMass();
 
         /* Predicting positions */
         double predictedX = this.beemanPositionPrediction(p.getX(), p.getVx(), p.getAx(), p.getPrevAx(), dt);
