@@ -33,7 +33,7 @@ public class Integrator {
 
     public void beeman(Particle p, Force f, double dt) {
         /* Calculating force components */
-        f.evaluate();
+        f.evaluate(p.getX(), p.getY(), p.getVx(), p.getVy());
 
         /* Calculating future accelerations TODO -> algo con la fuerza */
         double predictedAx = f.getFx() / p.getMass();
@@ -126,7 +126,7 @@ public class Integrator {
         double[] predictions = this.makeGearPredictions(this.gearDerivatives);
 
         // FIXME: evaluar bien la fuerza
-        f.evaluate();
+        // f.evaluate();
 
         // Calculated acceleration - predicted acceleration
         double deltaA = (f.getFx() / p.getMass()) - predictions[2];
