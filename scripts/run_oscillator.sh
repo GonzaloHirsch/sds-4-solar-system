@@ -10,4 +10,5 @@ java -jar ./target/sds-tp4-1.0-jar-with-dependencies.jar -tf 5 -tm $2 -dt $1 -rn
 java -jar ./target/sds-tp4-1.0-jar-with-dependencies.jar -tf 5 -tm $2 -dt $1 -rn g
 java -jar ./target/sds-tp4-1.0-jar-with-dependencies.jar -tf 5 -tm $2 -dt $1 -rn v
 
-python3 ./post/post_oscillator.py
+python3 ./post/post_oscillator.py -t p
+python3 ./post/post_oscillator.py -t e -dt $1
