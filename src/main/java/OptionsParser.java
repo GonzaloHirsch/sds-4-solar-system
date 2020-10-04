@@ -98,6 +98,7 @@ public class OptionsParser {
             // Retrieving the total time to be iterated
             timeMultiplicator = Integer.parseInt(cmd.getOptionValue(PARAM_TM));
 
+            /*
             // Checking if the files were present
             if (!cmd.hasOption(PARAM_SF) | !cmd.hasOption(PARAM_DF)){
                 System.out.println("The dynamic and static file path are needed");
@@ -107,6 +108,7 @@ public class OptionsParser {
             // Parsing the file paths
             staticFile = cmd.getOptionValue(PARAM_SF);
             dynamicFile = cmd.getOptionValue(PARAM_DF);
+            */
 
         } catch (ParseException e) {
             System.out.println("Unknown command used");

@@ -34,8 +34,8 @@ public class OscillatorSimulation {
         PARTICLE.setPrevValues(prevValues);
 
         // Creating the structure for results, we store every tm*dt results
-        int rows = (int) Math.floor(this.tf/(this.tm * this.dt));
-        this.results = new double[rows][5];
+        int rows = (int) Math.floor(this.tf/(this.tm * this.dt)) + 1;
+        this.results = new double[rows][2];
     }
 
     public double[][] runAnalytical(){

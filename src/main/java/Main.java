@@ -17,6 +17,7 @@ public class Main {
         // Parsing the options
         OptionsParser.ParseOptions(args);
 
+        /*
         try {
             // Parsing the initial configuration
             ConfigurationParser.ParseConfiguration(OptionsParser.staticFile, OptionsParser.dynamicFile);
@@ -24,6 +25,7 @@ public class Main {
             System.out.println("File not found");
             System.exit(1);
         }
+         */
 
         // Determine what to run
         switch (OptionsParser.option){
@@ -46,6 +48,7 @@ public class Main {
     }
 
     private static void runAnalytic(double tf, double dt, int tm){
+        System.out.println("Running ANALYTICAL solution...");
         OscillatorSimulation os = new OscillatorSimulation(tf, dt, tm);
         double[][] results = os.runAnalytical();
         GenerateOutputFileForOscillator(results, ANALYTIC_FILE);
@@ -57,14 +60,17 @@ public class Main {
 
         switch (option){
             case RUN_GEAR:
+                System.out.println("Running GEAR PREDICTOR CORRECTOR solution...");
                 results = os.runGearPredictorCorrector();
                 GenerateOutputFileForOscillator(results, GEAR_FILE);
                 break;
             case RUN_VERLET:
+                System.out.println("Running VERLET solution...");
                 results = os.runVerlet();
                 GenerateOutputFileForOscillator(results, VERLET_FILE);
                 break;
             case RUN_BEEMAN:
+                System.out.println("Running BEEMAN solution...");
                 results = os.runBeeman();
                 GenerateOutputFileForOscillator(results, BEEMAN_FILE);
                 break;
@@ -72,7 +78,7 @@ public class Main {
     }
 
     private static void runSimulation(){
-
+        // TODO: IMPLEMENTAR ESTO
     }
 
     private static void GenerateOutputFileForOscillator(double[][] results, String filename) {

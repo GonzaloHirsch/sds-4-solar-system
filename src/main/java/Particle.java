@@ -199,7 +199,7 @@ public class Particle implements Comparable<Particle> {
     }
 
     public void setFutureVy(double vy) {
-        this.futureVx = vy;
+        this.futureVy = vy;
     }
 
     public void setAx(double ax) {
