@@ -16,6 +16,9 @@ ERRORS_FILE = "./parsable_files/errors_file.txt"
 FILES = [ANALYTIC_FILE , VERLET_FILE, GEAR_FILE, BEEMAN_FILE]
 PLOT = 'p'
 EXTRACT_ERROR = 'e'
+BEEMAN = 'Beeman'
+VERLET = 'Verlet'
+GEAR = 'Gear'
 
 
 # Plots the information for each file
@@ -66,11 +69,44 @@ def extract_info_for_file(filename):
 
     return times, positions
 
+
 def save_errors(errors, dt):
     wf = open(ERRORS_FILE, 'a')
-    wf.write('{} {} {}\n'.format('B', dt, errors[BEEMAN_FILE]))
-    wf.write('{} {} {}\n'.format('G', dt, errors[GEAR_FILE]))
-    wf.write('{} {} {}\n'.format('V', dt, errors[VERLET_FILE]))
+    wf.write('{}\n'.format(dt))
+    wf.write('{} {}\n'.format(BEEMAN, errors[BEEMAN_FILE]))
+    wf.write('{} {}\n'.format(GEAR, errors[GEAR_FILE]))
+    wf.write('{} {}\n'.format(VERLET, errors[VERLET_FILE]))
+
+
+def plot_errors():
+    f = open(ERRORS_FILE, 'r')
+    times = []
+    beeman =[]
+    verlet =[]
+    gear = []
+
+    for line in f:
+        data = line.rstrip("\n").split(" ")
+        if len(data) == 1:
+            times.append(float(data[0]))
+        else:
+            error = float(data[1])
+            type = data[0]
+
+            if type == BEEMAN:
+                beeman.append(error)
+            elif type == GEAR:
+                gear.append(error)
+            elif type == VERLET:
+                verlet.append(error)
+
+    times, beeman, gear, verlet = zip(*sorted(zip(times, beeman, gear, verlet)))
+    plt.plot(times, beeman, 'o', label=BEEMAN, markersize=2)
+    plt.plot(times, gear, 'o', label=GEAR, markersize=2)
+    plt.plot(times, verlet, 'o', label=VERLET, markersize=2)
+    
+    plt.legend()
+    plt.show()
 
 
 # main() function
@@ -91,6 +127,7 @@ def main():
     elif args.process_type == EXTRACT_ERROR:
         errors = extract_errors()
         save_errors(errors, args.delta)
+        plot_errors()
 
 
 
