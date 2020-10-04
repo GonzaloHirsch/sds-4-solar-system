@@ -90,8 +90,8 @@ def plot_errors():
         if len(data) == 1:
             times.append(float(data[0]))
         else:
-            error = float(data[1])
             type = data[0]
+            error = float(data[1])
 
             if type == BEEMAN:
                 beeman.append(error)
