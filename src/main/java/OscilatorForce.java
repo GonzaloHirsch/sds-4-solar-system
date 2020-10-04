@@ -1,6 +1,6 @@
 public class OscilatorForce implements Force {
-    private double gamma;
-    private double k;
+    private final double gamma;
+    private final double k;
     private double fx;
 
     OscilatorForce(double gamma, double k) {

@@ -27,14 +27,14 @@ public class OscillatorSimulation {
         PARTICLE.setX(X0);
 
         // Creating an instance of the integrator
-        this.integrator = new Integrator(PARTICLE, this.dt, K);
+        this.integrator = new Integrator(PARTICLE, this.dt, K, GAMMA);
 
         // Using Euler to find the values at (t - dt)
         double[] prevValues = this.integrator.eulerPrediction(PARTICLE, OFORCE, (-1) * dt);
         PARTICLE.setPrevValues(prevValues);
 
         // Creating the structure for results, we store every tm*dt results
-        int rows = (int) Math.floor(this.tf/(this.tm * this.dt)) + 1;
+        int rows = (int) Math.floor(this.tf/(this.tm * this.dt));
         this.results = new double[rows][2];
     }
 
@@ -43,7 +43,7 @@ public class OscillatorSimulation {
         int index = 0;
 
         // In this case we can skip the dt we don't want
-        while (this.totalTime <= this.tf){
+        while (this.totalTime < this.tf){
             // Calculating the next position
             position = this.integrator.analyticalSolution(this.totalTime, GAMMA, K, MASS);
 
@@ -52,8 +52,8 @@ public class OscillatorSimulation {
             this.results[index][1] = position;
 
             // Updating the time
-            this.totalTime += (this.tm * this.dt);
             index++;
+            this.totalTime = index * (this.tm * this.dt);
         }
         return this.results;
     }
@@ -62,7 +62,7 @@ public class OscillatorSimulation {
         // Indexes to store the results
         int index = -1;
 
-        while (totalTime <= this.tf){
+        while (totalTime < this.tf){
             this.integrator.beeman(PARTICLE, OFORCE, this.dt);
 
             /* Get results */
@@ -80,7 +80,7 @@ public class OscillatorSimulation {
         // Indexes to store the results
         int index = -1;
 
-        while (totalTime <= this.tf){
+        while (totalTime < this.tf){
             // Making the Verlet step
             this.integrator.verlet(PARTICLE, OFORCE, K);
 
@@ -97,12 +97,12 @@ public class OscillatorSimulation {
         // Indexes to store the results
         int index = -1;
 
-        while (this.totalTime <= this.tf){
-            // Make the gear step
-            this.integrator.gearPredictorCorrector(PARTICLE, OFORCE);
-
+        while (this.totalTime < this.tf){
             // Checking if results can be stored
             index = this.checkAndStoreResults(index, PARTICLE.getX());
+
+            // Make the gear step
+            this.integrator.gearPredictorCorrector(PARTICLE, OFORCE);
 
             // Updating the time
             this.totalTime += this.dt;
