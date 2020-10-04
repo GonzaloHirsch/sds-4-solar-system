@@ -193,7 +193,9 @@ public class Integrator {
 
         // FIXME: VERIFICAR ESTA FORMULA
         // Next step for acceleration
-        double nextAx = (- k / p.getMass()) * nextX;
+        double[] eulerPred = this.eulerPrediction(p, f, this.deltaTime);
+        double nextAx = eulerPred[0];
+        // double nextAx = (- k / p.getMass()) * nextX;
 
         // Next step for velocity
         double nextVx = midNextVx + (nextAx * (this.deltaTime / 2));
