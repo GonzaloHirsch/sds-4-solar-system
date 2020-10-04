@@ -53,8 +53,14 @@ public class OscillatorSimulation {
 
     public double[][] runBeeman(){
         while (totalTime <= this.tf){
+            this.integrator.beeman(PARTICLE, OFORCE, this.dt);
 
+            /* Get results */
+            //TODO
+
+            /* Update */
             totalTime += this.dt;
+            PARTICLE.update();
         }
         return this.results;
     }

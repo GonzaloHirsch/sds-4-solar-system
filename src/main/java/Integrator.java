@@ -35,7 +35,7 @@ public class Integrator {
         /* Calculating force components */
         f.evaluate(p.getX(), p.getY(), p.getVx(), p.getVy());
 
-        /* Calculating future accelerations TODO -> algo con la fuerza */
+        /* Calculating future accelerations */
         double predictedAx = f.getFx() / p.getMass();
         double predictedAy = f.getFy() / p.getMass();
 
