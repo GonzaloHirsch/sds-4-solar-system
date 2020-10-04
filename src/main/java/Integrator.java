@@ -207,4 +207,29 @@ public class Integrator {
         p.setFutureAy(nextAy);
     }
 
+    public void velocityVerlet(Particle p, Force f, double k){
+        // Calculating the force in t
+        f.evaluate(p.getX(), p.getY(), p.getVx(), p.getVy());
+
+        // Calculating the next x position
+        double nextX = p.getX() + this.deltaTime * p.getVx() + ((Math.pow(this.deltaTime, 2) / p.getMass()) * f.getFx());
+
+        // Mid step for velocity
+        double midNextVx = p.getVx() + (f.getFx() / p.getMass()) * (this.deltaTime / 2);
+
+        // FIXME: VERIFICAR ESTA FORMULA
+        // Next step for acceleration
+        double[] eulerPred = this.eulerPrediction(p, f, this.deltaTime);
+        double nextAx = eulerPred[0];
+        // double nextAx = (- k / p.getMass()) * nextX;
+
+        // Next step for velocity
+        double nextVx = midNextVx + (nextAx * (this.deltaTime / 2));
+
+        // Setting the next variables
+        p.setX(nextX);
+        p.setVx(nextVx);
+        p.setAx(nextAx);
+    }
+
 }
