@@ -67,8 +67,6 @@ public class OscillatorSimulation {
             this.integrator.beeman(PARTICLE, OFORCE, this.dt);
             PARTICLE.update();
 
-            /* Get results */
-
             /* Update */
             totalTime += this.dt;
 
@@ -81,11 +79,12 @@ public class OscillatorSimulation {
         int index = -1;
 
         while (totalTime < this.tf){
-            // Making the Verlet step
-            this.integrator.verlet(PARTICLE, OFORCE, K);
-
             // Checking if results can be stored
             index = this.checkAndStoreResults(index, PARTICLE.getX());
+
+            // Making the Verlet step
+            this.integrator.verlet(PARTICLE, OFORCE);
+            PARTICLE.update();
 
             // Updating the time
             totalTime += this.dt;

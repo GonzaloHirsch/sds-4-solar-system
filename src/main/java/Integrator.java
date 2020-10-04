@@ -181,27 +181,30 @@ public class Integrator {
     //                                    VERLET
     /////////////////////////////////////////////////////////////////////////////////////
 
-    public void verlet(Particle p, Force f, double k){
+    public void verlet(Particle p, Force f){
         // Calculating the force in t
         f.evaluate(p.getX(), p.getY(), p.getVx(), p.getVy());
 
         // Calculating the next x position
-        double nextX = p.getX() + this.deltaTime * p.getVx() + ((Math.pow(this.deltaTime, 2) / p.getMass()) * f.getFx());
+        double nextX = (2 * p.getX()) - p.getPrevX() + ((Math.pow(this.deltaTime, 2) / p.getMass()) * f.getFx());
+        double nextY = (2 * p.getY()) - p.getPrevY() + ((Math.pow(this.deltaTime, 2) / p.getMass()) * f.getFy());
 
-        // Mid step for velocity
-        double midNextVx = p.getVx() + (f.getFx() / p.getMass()) * (this.deltaTime / 2);
+        // Calculating the next x velocity
+        double nextVx = (nextX - p.getPrevX()) / (2 * this.deltaTime);
+        double nextVy = (nextY - p.getPrevY()) / (2 * this.deltaTime);
 
-        // FIXME: VERIFICAR ESTA FORMULA
-        // Next step for acceleration
-        double nextAx = (- k / p.getMass()) * nextX;
-
-        // Next step for velocity
-        double nextVx = midNextVx + (nextAx * (this.deltaTime / 2));
+        // Evaluating the new force
+        f.evaluate(nextX, nextY, nextVx, nextVy);
+        double nextAx = f.getFx() / p.getMass();
+        double nextAy = f.getFy() / p.getMass();
 
         // Setting the next variables
-        p.setX(nextX);
-        p.setVx(nextVx);
-        p.setAx(nextAx);
+        p.setFutureX(nextX);
+        p.setFutureY(nextY);
+        p.setFutureVx(nextVx);
+        p.setFutureVy(nextVy);
+        p.setFutureAx(nextAx);
+        p.setFutureAy(nextAy);
     }
 
 }
