@@ -61,7 +61,7 @@ public class Integrator {
     }
 
     private double beemanVelocityPrediction(double v, double a, double aPrev, double aFuture, double dt) {
-        return v + ((1.0/3.0)*aFuture + (5.0/6.0)*a + (1.0/6.0)*aPrev) * dt;
+        return v + ((1.0/3.0)*aFuture + (5.0/6.0)*a - (1.0/6.0)*aPrev) * dt;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +87,33 @@ public class Integrator {
         calculations[5] = p.getY()  + calculations[3] * dt; // Y(t+dt)
 
         return calculations;        
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    //                              EULER MODIFICADO
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    public double[] eulerModified(Particle p, Force f, double dt) {
+        f.evaluate(p.getX(), p.getY(), p.getVx(), p.getVy());
+
+        double predictedVx = p.getVx() + (dt/p.getMass()) * f.getFx();
+        double predictedVy = p.getVy() + (dt/p.getMass()) * f.getFy();
+
+        double predictedX = p.getX() + (dt * predictedVx) + ((dt * dt) / (2 * p.getMass())) * f.getFx();
+        double predictedY = p.getY() + (dt * predictedVy) + ((dt * dt) / (2 * p.getMass())) * f.getFy();
+
+        f.evaluate(predictedX, predictedY, predictedVx, predictedVy);
+
+        double[] calculations = new double[6];
+
+        calculations[0] = f.getFx() / p.getMass(); // Ax(t+dt)
+        calculations[1] = f.getFy() / p.getMass(); // Ay(t+dt)
+        calculations[2] = predictedVx;             // Vx(t+dt)
+        calculations[3] = predictedVy;             // Vy(t+dt)
+        calculations[4] = predictedX;              // X(t+dt)
+        calculations[5] = predictedY;              // Y(t+dt)
+
+        return calculations;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -157,7 +184,7 @@ public class Integrator {
 
     public void verlet(Particle p, Force f, double k){
         // Calculating the force in t
-        f.evaluate(p.getX(), p.getVx());
+        f.evaluate(p.getX(), p.getY(), p.getVx(), p.getVy());
 
         // Calculating the next x position
         double nextX = p.getX() + this.deltaTime * p.getVx() + ((Math.pow(this.deltaTime, 2) / p.getMass()) * f.getFx());
