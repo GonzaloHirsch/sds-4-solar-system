@@ -89,7 +89,6 @@ public class Integrator {
         return calculations;        
     }
 
-
     /////////////////////////////////////////////////////////////////////////////////////
     //                              GEAR PREDICTOR CORRECTOR
     /////////////////////////////////////////////////////////////////////////////////////
@@ -120,12 +119,12 @@ public class Integrator {
         return predictions;
     }
 
-    public void gearPredictorCorrector(Particle p, Force f, double dt){
+    public void gearPredictorCorrector(Particle p, Force f){
         // Making the predictions
         double[] predictions = this.makeGearPredictions(this.gearDerivatives);
 
         // FIXME: evaluar bien la fuerza
-        // f.evaluate();
+        f.evaluate(predictions[0], predictions[1]);
 
         // Calculated acceleration - predicted acceleration
         double deltaA = (f.getFx() / p.getMass()) - predictions[2];
@@ -138,5 +137,38 @@ public class Integrator {
         for (int i = 0; i < this.gearDerivatives.length; i++){
             this.gearDerivatives[i] = predictions[i] + this.gearAlphas[i] * deltaR2 * (1 / this.gearDeltaFactorials[i]);
         }
+
+        // Setting the values
+        p.setX(this.gearDerivatives[0]);
+        p.setVx(this.gearDerivatives[1]);
+        p.setAx(this.gearDerivatives[2]);
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////
+    //                                    VERLET
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    public void verlet(Particle p, Force f, double k){
+        // Calculating the force in t
+        f.evaluate(p.getX(), p.getVx());
+
+        // Calculating the next x position
+        double nextX = p.getX() + this.deltaTime * p.getVx() + ((Math.pow(this.deltaTime, 2) / p.getMass()) * f.getFx());
+
+        // Mid step for velocity
+        double midNextVx = p.getVx() + (f.getFx() / p.getMass()) * (this.deltaTime / 2);
+
+        // FIXME: VERIFICAR ESTA FORMULA
+        // Next step for acceleration
+        double nextAx = (- k / p.getMass()) * nextX;
+
+        // Next step for velocity
+        double nextVx = midNextVx + (nextAx * (this.deltaTime / 2));
+
+        // Setting the next variables
+        p.setX(nextX);
+        p.setVx(nextVx);
+        p.setAx(nextAx);
+    }
+
 }

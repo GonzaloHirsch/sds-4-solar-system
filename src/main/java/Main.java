@@ -6,6 +6,11 @@ import java.time.Instant;
 import java.util.Collection;
 
 public class Main {
+    private static final String BEEMAN_FILE = "./parsable_files/beeman.txt";
+    private static final String VERLET_FILE = "./parsable_files/verlet.txt";
+    private static final String GEAR_FILE = "./parsable_files/gear.txt";
+    private static final String ANALYTIC_FILE = "./parsable_files/analytic.txt";
+
     public static void main(String[] args) {
         long startTime = Instant.now().toEpochMilli();
 
@@ -23,10 +28,10 @@ public class Main {
         // Determine what to run
         switch (OptionsParser.option){
             case RUN_ANALYTICAL:
-                runAnalytic(OptionsParser.totalTime);
+                runAnalytic(OptionsParser.totalTime, OptionsParser.delta, OptionsParser.timeMultiplicator);
                 break;
             case RUN_NUMERICAL:
-                runNumerical(OptionsParser.totalTime);
+                runNumerical(OptionsParser.numericalOption, OptionsParser.totalTime, OptionsParser.delta, OptionsParser.timeMultiplicator);
                 break;
             case RUN_SIMULATION:
                 runSimulation();
@@ -40,32 +45,52 @@ public class Main {
         System.out.format("Total Time %d millis\n", total);
     }
 
-    private static void runAnalytic(double tf){
-        OscillatorSimulation os = new OscillatorSimulation(tf);
+    private static void runAnalytic(double tf, double dt, int tm){
+        OscillatorSimulation os = new OscillatorSimulation(tf, dt, tm);
+        double[][] results = os.runAnalytical();
+        GenerateOutputFileForOscillator(results, ANALYTIC_FILE);
     }
 
-    private static void runNumerical(double tf){
-        OscillatorSimulation os = new OscillatorSimulation(tf);
+    private static void runNumerical(OptionsParser.NumericalOptions option, double tf, double dt, int tm){
+        OscillatorSimulation os = new OscillatorSimulation(tf, dt, tm);
+        double[][] results;
+
+        switch (option){
+            case RUN_GEAR:
+                results = os.runGearPredictorCorrector();
+                GenerateOutputFileForOscillator(results, GEAR_FILE);
+                break;
+            case RUN_VERLET:
+                results = os.runVerlet();
+                GenerateOutputFileForOscillator(results, VERLET_FILE);
+                break;
+            case RUN_BEEMAN:
+                results = os.runBeeman();
+                GenerateOutputFileForOscillator(results, BEEMAN_FILE);
+                break;
+        }
     }
 
     private static void runSimulation(){
 
     }
 
-    private static void GenerateOutputFile(Collection<Particle> particles, double time) {
+    private static void GenerateOutputFileForOscillator(double[][] results, String filename) {
         try {
-            BufferedWriter bf = new BufferedWriter(new FileWriter(OptionsParser.dynamicFile, true));
-            bf.append(String.format("%f\n", time));
+            BufferedWriter bf = new BufferedWriter(new FileWriter(filename, true));
 
-            // Creating the output for the file
-            particles.forEach(p -> {
-                String line = p.getX() + " " + p.getY() + " " + p.getVx() + " " + p.getVy() + "\n";
+            for (double[] result : results) {
+                // Adding the time
+                bf.append(String.format("%f ", result[0]));
+
+                // Adding the position
+                String line = result[1] + "\n";
                 try {
                     bf.append(line);
                 } catch (IOException e) {
                     System.out.println("Error writing to the output file");
                 }
-            });
+            }
 
             bf.close();
         } catch (FileNotFoundException e) {

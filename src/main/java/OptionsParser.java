@@ -3,6 +3,7 @@ import org.apache.commons.cli.*;
 // TODO: HACER ESTO Y DEFINIR OPCIONES
 public class OptionsParser {
     protected static RunOptions option;
+    protected static NumericalOptions numericalOption;
     protected static Double delta;
     protected static Double totalTime;
     protected static Integer timeMultiplicator;
@@ -18,6 +19,10 @@ public class OptionsParser {
     private static final String PARAM_DF = "df";
     private static final String PARAM_SF = "sf";
 
+    private static final String VALUE_RN_B = "b";
+    private static final String VALUE_RN_G = "g";
+    private static final String VALUE_RN_V = "v";
+
     /**
      * Generates the options for the help.
      *
@@ -29,7 +34,7 @@ public class OptionsParser {
         options.addOption(PARAM_TF, "total_time", true, "Total time to be considered");
         options.addOption(PARAM_TM, "time_multiplicator", true, "Time multiplicator for output");
         options.addOption(PARAM_RA, "run_analytical", false, "Run the analytical solution");
-        options.addOption(PARAM_RN, "run_numerical", false, "Run the numerical solution");
+        options.addOption(PARAM_RN, "run_numerical", true, "Run the numerical solution");
         options.addOption(PARAM_RS, "run_simulation", false, "Run the simulation");
         options.addOption(PARAM_DF, "dynamic_file", true, "Path to the file with the dynamic values.");
         options.addOption(PARAM_SF, "static_file", true, "Path to the file with the static values.");
@@ -58,7 +63,14 @@ public class OptionsParser {
                 System.exit(1);
             } else {
                 if (cmd.hasOption(PARAM_RA)) option = RunOptions.RUN_ANALYTICAL;
-                else if (cmd.hasOption(PARAM_RN)) option = RunOptions.RUN_NUMERICAL;
+                else if (cmd.hasOption(PARAM_RN)){
+                    option = RunOptions.RUN_NUMERICAL;
+                    numericalOption = NumericalOptions.FromValue(cmd.getOptionValue(PARAM_RN));
+                    if (numericalOption == null){
+                        System.out.println("Invalid numerical option selected");
+                        System.exit(1);
+                    }
+                }
                 else if (cmd.hasOption(PARAM_RS)) option = RunOptions.RUN_SIMULATION;
             }
 
@@ -119,5 +131,27 @@ public class OptionsParser {
         RUN_ANALYTICAL,
         RUN_NUMERICAL,
         RUN_SIMULATION
+    }
+
+    public enum NumericalOptions{
+        RUN_GEAR("g"),
+        RUN_VERLET("v"),
+        RUN_BEEMAN("b");
+
+        private final String value;
+
+        private NumericalOptions(String s){
+            this.value = s;
+        }
+
+        public static NumericalOptions FromValue(String s){
+            s = s.toLowerCase();
+            for (NumericalOptions opt : NumericalOptions.values()){
+                if (opt.value.equals(s)){
+                    return opt;
+                }
+            }
+            return null;
+        }
     }
 }

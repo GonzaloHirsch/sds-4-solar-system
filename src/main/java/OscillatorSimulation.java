@@ -15,7 +15,7 @@ public class OscillatorSimulation {
 
     private double totalTime = 0;
 
-    public OscillatorSimulation(Particle particle, double tf, double dt, int tm) {
+    public OscillatorSimulation(double tf, double dt, int tm) {
         this.tf = tf;
         this.dt = dt;
         this.tm = tm;
@@ -44,19 +44,30 @@ public class OscillatorSimulation {
 
         // In this case we can skip the dt we don't want
         while (this.totalTime <= this.tf){
+            // Calculating the next position
             position = this.integrator.analyticalSolution(this.totalTime, GAMMA, K, MASS);
-            this.results[index++][1] = position;
+
+            // Storing the results
+            this.results[index][0] = this.totalTime;
+            this.results[index][1] = position;
+
+            // Updating the time
             this.totalTime += (this.tm * this.dt);
+            index++;
         }
         return this.results;
     }
 
     public double[][] runBeeman(){
+        // Indexes to store the results
+        int index = -1;
+
         while (totalTime <= this.tf){
             this.integrator.beeman(PARTICLE, OFORCE, this.dt);
 
             /* Get results */
-            //TODO
+            // Checking if results can be stored
+            index = this.checkAndStoreResults(index, PARTICLE.getX());
 
             /* Update */
             totalTime += this.dt;
@@ -66,18 +77,47 @@ public class OscillatorSimulation {
     }
 
     public double[][] runVerlet(){
-        while (totalTime <= this.tf){
+        // Indexes to store the results
+        int index = -1;
 
+        while (totalTime <= this.tf){
+            // Making the Verlet step
+            this.integrator.verlet(PARTICLE, OFORCE, K);
+
+            // Checking if results can be stored
+            index = this.checkAndStoreResults(index, PARTICLE.getX());
+
+            // Updating the time
             totalTime += this.dt;
         }
         return this.results;
     }
 
     public double[][] runGearPredictorCorrector(){
-        while (totalTime <= this.tf){
+        // Indexes to store the results
+        int index = -1;
 
-            totalTime += this.dt;
+        while (this.totalTime <= this.tf){
+            // Make the gear step
+            this.integrator.gearPredictorCorrector(PARTICLE, OFORCE);
+
+            // Checking if results can be stored
+            index = this.checkAndStoreResults(index, PARTICLE.getX());
+
+            // Updating the time
+            this.totalTime += this.dt;
         }
         return this.results;
+    }
+
+    private int checkAndStoreResults(int i, double x){
+        // Calculate the possible index to use
+        int target_index = (int) Math.floor(this.totalTime / (this.dt * this.tm));
+        if (target_index > i){
+            // Storing the results, only time and position are needed
+            this.results[target_index][0] = this.totalTime;
+            this.results[target_index][1] = PARTICLE.getX();
+        }
+        return Math.max(i, target_index);
     }
 }
