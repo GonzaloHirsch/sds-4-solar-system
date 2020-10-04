@@ -14,8 +14,10 @@ GEAR_FILE = "./parsable_files/gear.txt"
 ANALYTIC_FILE = "./parsable_files/analytic.txt"
 ERRORS_FILE = "./parsable_files/errors_file.txt"
 FILES = [ANALYTIC_FILE , VERLET_FILE, GEAR_FILE, BEEMAN_FILE]
+
 PLOT = 'p'
-EXTRACT_ERROR = 'e'
+EXTRACT_ERROR = 'ee'
+PLOT_ERROR = 'pe'
 BEEMAN = 'Beeman'
 VERLET = 'Verlet'
 GEAR = 'Gear'
@@ -101,10 +103,12 @@ def plot_errors():
                 verlet.append(error)
 
     times, beeman, gear, verlet = zip(*sorted(zip(times, beeman, gear, verlet)))
-    plt.plot(times, beeman, 'o', label=BEEMAN, markersize=2)
-    plt.plot(times, gear, 'o', label=GEAR, markersize=2)
-    plt.plot(times, verlet, 'o', label=VERLET, markersize=2)
-    
+    plt.plot(times, beeman, 'o', label=BEEMAN, markersize=4)
+    plt.plot(times, gear, 'o', label=GEAR, markersize=4)
+    plt.plot(times, verlet, 'o', label=VERLET, markersize=4)
+
+    plt.yscale("log")
+    plt.xscale("log")
     plt.legend()
     plt.show()
 
@@ -121,15 +125,13 @@ def main():
     parser.add_argument('-t', dest='process_type', required=True)
     args = parser.parse_args()
 
-
     if args.process_type == PLOT:
         plot_oscillator_graphs()
     elif args.process_type == EXTRACT_ERROR:
         errors = extract_errors()
         save_errors(errors, args.delta)
+    elif args.process_type == PLOT_ERROR:
         plot_errors()
-
-
 
 # call main
 if __name__ == '__main__':
