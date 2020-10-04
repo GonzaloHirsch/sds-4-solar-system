@@ -40,20 +40,18 @@ public class OscillatorSimulation {
 
     public double[][] runAnalytical(){
         double position;
-        int index = 0;
+        int index = -1;
 
         // In this case we can skip the dt we don't want
         while (this.totalTime < this.tf){
             // Calculating the next position
             position = this.integrator.analyticalSolution(this.totalTime, GAMMA, K, MASS);
 
-            // Storing the results
-            this.results[index][0] = this.totalTime;
-            this.results[index][1] = position;
+            // Checking if results can be stored
+            index = this.checkAndStoreResults(index, position);
 
             // Updating the time
-            index++;
-            this.totalTime = index * (this.tm * this.dt);
+            this.totalTime += this.dt;
         }
         return this.results;
     }
@@ -69,8 +67,6 @@ public class OscillatorSimulation {
             this.integrator.beeman(PARTICLE, OFORCE, this.dt);
             PARTICLE.update();
 
-            /* Get results */
-
             /* Update */
             totalTime += this.dt;
 
@@ -83,11 +79,12 @@ public class OscillatorSimulation {
         int index = -1;
 
         while (totalTime < this.tf){
-            // Making the Verlet step
-            this.integrator.verlet(PARTICLE, OFORCE, K);
-
             // Checking if results can be stored
             index = this.checkAndStoreResults(index, PARTICLE.getX());
+
+            // Making the Verlet step
+            this.integrator.verlet(PARTICLE, OFORCE);
+            PARTICLE.update();
 
             // Updating the time
             totalTime += this.dt;

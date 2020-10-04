@@ -181,7 +181,33 @@ public class Integrator {
     //                                    VERLET
     /////////////////////////////////////////////////////////////////////////////////////
 
-    public void verlet(Particle p, Force f, double k){
+    public void verlet(Particle p, Force f){
+        // Calculating the force in t
+        f.evaluate(p.getX(), p.getY(), p.getVx(), p.getVy());
+
+        // Calculating the next x position
+        double nextX = (2 * p.getX()) - p.getPrevX() + ((Math.pow(this.deltaTime, 2) / p.getMass()) * f.getFx());
+        double nextY = (2 * p.getY()) - p.getPrevY() + ((Math.pow(this.deltaTime, 2) / p.getMass()) * f.getFy());
+
+        // Calculating the next x velocity
+        double nextVx = (nextX - p.getPrevX()) / (2 * this.deltaTime);
+        double nextVy = (nextY - p.getPrevY()) / (2 * this.deltaTime);
+
+        // Evaluating the new force
+        f.evaluate(nextX, nextY, nextVx, nextVy);
+        double nextAx = f.getFx() / p.getMass();
+        double nextAy = f.getFy() / p.getMass();
+
+        // Setting the next variables
+        p.setFutureX(nextX);
+        p.setFutureY(nextY);
+        p.setFutureVx(nextVx);
+        p.setFutureVy(nextVy);
+        p.setFutureAx(nextAx);
+        p.setFutureAy(nextAy);
+    }
+
+    public void velocityVerlet(Particle p, Force f, double k){
         // Calculating the force in t
         f.evaluate(p.getX(), p.getY(), p.getVx(), p.getVy());
 
