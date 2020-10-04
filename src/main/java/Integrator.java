@@ -1,6 +1,6 @@
 public class Integrator {
 
-    private double deltaTime;
+    private final double deltaTime;
 
     // Gear predictor coefficients
     private final double[] gearAlphas = new double[]{3.0/16, 251.0/360, 1, 11.0/18, 1.0/6, 1.0/60};
@@ -9,7 +9,7 @@ public class Integrator {
     private final double[] gearDeltaFactorials;
 
     // Gear predictor derivatives
-    private double gearDerivatives[];
+    private final double[] gearDerivatives;
 
     public Integrator(Particle p, double deltaTime, double k, double gamma){
         this.deltaTime = deltaTime;
@@ -23,7 +23,7 @@ public class Integrator {
 
     public double analyticalSolution(double time, double gamma, double k, double mass) {
         double exponential = Math.exp(-(gamma / (2*mass)) * time);
-        double cosine = Math.cos(Math.pow((k/mass - (gamma*gamma)/(4*(mass*mass))), 0.5) * time);
+        double cosine = Math.cos(Math.pow(((k/mass) - (gamma*gamma)/(4*(mass*mass))), 0.5) * time);
         return exponential * cosine;
     }
 
@@ -122,32 +122,31 @@ public class Integrator {
 
     private double[] initGearDerivatives(double k, double gamma, Particle p){
         double[] derivatives = new double[6];
+        double km = -(k / p.getMass());
+        double gammam = -(gamma / p.getMass());
+
         derivatives[0] = p.getX();  // Position
         derivatives[1] = p.getVx(); // Velocity
-        double km = (- k / p.getMass());
-        double gammam = (- gamma / p.getMass());
-        /*
-        derivatives[2] = km * p.getX();    // Acceleration
-        // FIXME: ver si hay que poner 0 o como dice el PPT en pag 29
-        derivatives[3] = km * p.getVx();
-        derivatives[4] = km * km * p.getX();
-        derivatives[5] = km * km * p.getVx();
-         */
         derivatives[2] = (km * derivatives[0]) + (gammam * derivatives[1]);    // Acceleration
-        derivatives[3] = (km * derivatives[1]) + (gammam * derivatives[2]);
-        derivatives[4] = (km * derivatives[2]) + (gammam * derivatives[3]);
-        derivatives[5] = (km * derivatives[3]) + (gammam * derivatives[4]);
+//        derivatives[3] = (km * derivatives[1]) + (gammam * derivatives[2]);
+//        derivatives[4] = (km * derivatives[2]) + (gammam * derivatives[3]);
+//        derivatives[5] = (km * derivatives[3]) + (gammam * derivatives[4]);
+        derivatives[3] = 0;
+        derivatives[4] = 0;
+        derivatives[5] = 0;
         return derivatives;
     }
 
     private double[] makeGearPredictions(double[] derivatives){
         double[] predictions = new double[derivatives.length];
+        double partialSum;
 
-        for (int i = 0, partialSum = 0; i < predictions.length; i++){
+        for (int i = 0; i < predictions.length; i++){
+            partialSum = 0;
             for (int j = 1; j + i < predictions.length; j++){
                 partialSum += (derivatives[j + i] * this.gearDeltaFactorials[j]);
             }
-            predictions[i] += derivatives[i] + partialSum;
+            predictions[i] += (derivatives[i] + partialSum);
         }
 
         return predictions;

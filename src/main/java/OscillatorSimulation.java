@@ -63,15 +63,17 @@ public class OscillatorSimulation {
         int index = -1;
 
         while (totalTime < this.tf){
-            this.integrator.beeman(PARTICLE, OFORCE, this.dt);
-
-            /* Get results */
             // Checking if results can be stored
             index = this.checkAndStoreResults(index, PARTICLE.getX());
 
+            this.integrator.beeman(PARTICLE, OFORCE, this.dt);
+            PARTICLE.update();
+
+            /* Get results */
+
             /* Update */
             totalTime += this.dt;
-            PARTICLE.update();
+
         }
         return this.results;
     }
@@ -98,11 +100,11 @@ public class OscillatorSimulation {
         int index = -1;
 
         while (this.totalTime < this.tf){
-            // Checking if results can be stored
-            index = this.checkAndStoreResults(index, PARTICLE.getX());
-
             // Make the gear step
             this.integrator.gearPredictorCorrector(PARTICLE, OFORCE);
+
+            // Checking if results can be stored
+            index = this.checkAndStoreResults(index, PARTICLE.getX());
 
             // Updating the time
             this.totalTime += this.dt;
@@ -116,7 +118,7 @@ public class OscillatorSimulation {
         if (target_index > i){
             // Storing the results, only time and position are needed
             this.results[target_index][0] = this.totalTime;
-            this.results[target_index][1] = PARTICLE.getX();
+            this.results[target_index][1] = x;
         }
         return Math.max(i, target_index);
     }

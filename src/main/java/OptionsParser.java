@@ -19,10 +19,6 @@ public class OptionsParser {
     private static final String PARAM_DF = "df";
     private static final String PARAM_SF = "sf";
 
-    private static final String VALUE_RN_B = "b";
-    private static final String VALUE_RN_G = "g";
-    private static final String VALUE_RN_V = "v";
-
     /**
      * Generates the options for the help.
      *
