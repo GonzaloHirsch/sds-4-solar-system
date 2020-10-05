@@ -103,15 +103,16 @@ def plot_errors():
                 verlet.append(error)
 
     times, beeman, gear, verlet = zip(*sorted(zip(times, beeman, gear, verlet)))
-    plt.plot(times, beeman, 'o', label=BEEMAN, markersize=4)
-    plt.plot(times, gear, 'o', label=GEAR, markersize=4)
-    plt.plot(times, verlet, 'o', label=VERLET, markersize=4)
+    plt.plot(times, beeman, 'o', label=BEEMAN, markersize=5)
+    plt.plot(times, gear, 'o', label=GEAR, markersize=5)
+    plt.plot(times, verlet, 'o', label=VERLET, markersize=5)
 
     plt.yscale("log")
     plt.xscale("log")
+    plt.gca().set_xlabel("Delta de Tiempo [s]")
+    plt.gca().set_ylabel("Error Cuadrático Medio [m^2]")
     plt.legend()
     plt.show()
-
 
 # main() function
 def main():

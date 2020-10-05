@@ -1,8 +1,11 @@
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Main {
@@ -47,6 +50,10 @@ public class Main {
         System.out.format("Total Time %d millis\n", total);
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////
+    //                                    SIMULATIONS
+    /////////////////////////////////////////////////////////////////////////////////////
+
     private static void runAnalytic(double tf, double dt, int tm){
         System.out.println("Running ANALYTICAL solution...");
         OscillatorSimulation os = new OscillatorSimulation(tf, dt, tm);
@@ -81,6 +88,10 @@ public class Main {
         // TODO: IMPLEMENTAR ESTO
     }
 
+    /////////////////////////////////////////////////////////////////////////////////////
+    //                                    OUTPUT
+    /////////////////////////////////////////////////////////////////////////////////////
+
     private static void GenerateOutputFileForOscillator(double[][] results, String filename) {
         try {
             BufferedWriter bf = new BufferedWriter(new FileWriter(filename, true));
@@ -95,6 +106,33 @@ public class Main {
                     bf.append(line);
                 } catch (IOException e) {
                     System.out.println("Error writing to the output file");
+                }
+            }
+
+            bf.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+        } catch (IOException e) {
+            System.out.println("Error writing to the output file");
+        }
+    }
+
+    private static void GenerateOutputFileForSolarSystem(ArrayList<ImmutablePair<Double, double[][]>> results, String filename){
+        try {
+            BufferedWriter bf = new BufferedWriter(new FileWriter(filename, true));
+
+            for (ImmutablePair<Double, double[][]> pair : results){
+                // Adding the time
+                bf.append(String.format("%f\n", pair.left));
+
+                for (double[] result : pair.right) {
+                    // Adding the position
+                    String line = result[0] + " " + result[1] + " " + result[2] + " " + result[3] + "\n";
+                    try {
+                        bf.append(line);
+                    } catch (IOException e) {
+                        System.out.println("Error writing to the output file");
+                    }
                 }
             }
 
