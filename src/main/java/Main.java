@@ -6,29 +6,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class Main {
     private static final String BEEMAN_FILE = "./parsable_files/beeman.txt";
     private static final String VERLET_FILE = "./parsable_files/verlet.txt";
     private static final String GEAR_FILE = "./parsable_files/gear.txt";
     private static final String ANALYTIC_FILE = "./parsable_files/analytic.txt";
+    private static final String SIMULATION_FILE = "./parsable_files/output.txt";
 
     public static void main(String[] args) {
         long startTime = Instant.now().toEpochMilli();
 
         // Parsing the options
         OptionsParser.ParseOptions(args);
-
-        /*
-        try {
-            // Parsing the initial configuration
-            ConfigurationParser.ParseConfiguration(OptionsParser.staticFile, OptionsParser.dynamicFile);
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-            System.exit(1);
-        }
-         */
 
         // Determine what to run
         switch (OptionsParser.option){
@@ -39,7 +29,14 @@ public class Main {
                 runNumerical(OptionsParser.numericalOption, OptionsParser.totalTime, OptionsParser.delta, OptionsParser.timeMultiplicator);
                 break;
             case RUN_SIMULATION:
-                runSimulation();
+                try {
+                    // Parsing the initial configuration
+                    ConfigurationParser.ParseConfiguration(OptionsParser.staticFile, OptionsParser.dynamicFile);
+                } catch (FileNotFoundException e) {
+                    System.out.println("File not found");
+                    System.exit(1);
+                }
+                runSimulation(OptionsParser.totalTime, OptionsParser.delta, OptionsParser.timeMultiplicator);
                 break;
         }
 
@@ -55,7 +52,7 @@ public class Main {
     /////////////////////////////////////////////////////////////////////////////////////
 
     private static void runAnalytic(double tf, double dt, int tm){
-        System.out.println("Running ANALYTICAL solution...");
+        System.out.print("Running ANALYTICAL solution... ");
         OscillatorSimulation os = new OscillatorSimulation(tf, dt, tm);
         double[][] results = os.runAnalytical();
         GenerateOutputFileForOscillator(results, ANALYTIC_FILE);
@@ -67,25 +64,31 @@ public class Main {
 
         switch (option){
             case RUN_GEAR:
-                System.out.println("Running GEAR PREDICTOR CORRECTOR solution...");
+                System.out.print("Running GEAR PREDICTOR CORRECTOR solution... ");
                 results = os.runGearPredictorCorrector();
                 GenerateOutputFileForOscillator(results, GEAR_FILE);
                 break;
             case RUN_VERLET:
-                System.out.println("Running VERLET solution...");
+                System.out.print("Running VERLET solution... ");
                 results = os.runVerlet();
                 GenerateOutputFileForOscillator(results, VERLET_FILE);
                 break;
             case RUN_BEEMAN:
-                System.out.println("Running BEEMAN solution...");
+                System.out.print("Running BEEMAN solution... ");
                 results = os.runBeeman();
                 GenerateOutputFileForOscillator(results, BEEMAN_FILE);
                 break;
         }
     }
 
-    private static void runSimulation(){
-        // TODO: IMPLEMENTAR ESTO
+    private static void runSimulation(double tf, double dt, int tm){
+        SolarSystemSimulation sss = new SolarSystemSimulation(tf, dt, tm, false, ConfigurationParser.particles.get(0), ConfigurationParser.particles.get(1), ConfigurationParser.particles.get(2), ConfigurationParser.particles.get(3));
+
+        // Simulating the system
+        ArrayList<ImmutablePair<Double, double[][]>> results = sss.simulateSolarSystem();
+
+        // Generating the output
+        GenerateOutputFileForSolarSystem(results, SIMULATION_FILE);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -119,7 +122,7 @@ public class Main {
 
     private static void GenerateOutputFileForSolarSystem(ArrayList<ImmutablePair<Double, double[][]>> results, String filename){
         try {
-            BufferedWriter bf = new BufferedWriter(new FileWriter(filename, true));
+            BufferedWriter bf = new BufferedWriter(new FileWriter(filename, false));
 
             for (ImmutablePair<Double, double[][]> pair : results){
                 // Adding the time

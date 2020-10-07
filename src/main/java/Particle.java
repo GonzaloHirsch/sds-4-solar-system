@@ -218,6 +218,29 @@ public class Particle implements Comparable<Particle> {
         this.futureAy = ay;
     }
 
+    public void setPrevX(double prevX) {
+        this.prevX = prevX;
+    }
+
+    public void setPrevY(double prevY) {
+        this.prevY = prevY;
+    }
+
+    public void setPrevVx(double prevVx) {
+        this.prevVx = prevVx;
+    }
+
+    public void setPrevVy(double prevVy) {
+        this.prevVy = prevVy;
+    }
+
+    public void setPrevAx(double prevAx) {
+        this.prevAx = prevAx;
+    }
+
+    public void setPrevAy(double prevAy) {
+        this.prevAy = prevAy;
+    }
 
     //////////////////////////////////////////////////////////////////////////////////////////
     //                                        METHODS
@@ -249,6 +272,24 @@ public class Particle implements Comparable<Particle> {
 
     public int compareTo(Particle particle) {
         return Integer.compare(id, particle.getId());
+    }
+
+    /**
+     * Computes the distance between the instance of the particle and other particle
+     * @param other particle to calculate the distance to
+     * @return distance between the particles
+     */
+    public double distanceTo(Particle other){
+        return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+    }
+
+    /**
+     * Computes the predicted distance between the instance of the particle and other particle
+     * @param other particle to calculate the distance to
+     * @return distance between the particles
+     */
+    public double predictedDistanceTo(Particle other){
+        return Math.sqrt(Math.pow(this.futureX - other.futureX, 2) + Math.pow(this.futureY - other.futureY, 2));
     }
 
     public void setPrevValues(final double[] values) {

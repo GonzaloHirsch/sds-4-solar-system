@@ -6,5 +6,9 @@ public final class Constants {
     public static final double SHIP_MASS = 500000;
 
     // Universal Gravitation Constant
-    private static final double G = 6.693 * Math.pow(10, -11);      // m^3/(kg * s^2)
+    public static final double G = 6.693 * Math.pow(10, -20);      // km^3/(kg * s^2)
+
+    private Constants() throws Exception {
+        throw new Exception("Cannot create instance of class");
+    }
 }

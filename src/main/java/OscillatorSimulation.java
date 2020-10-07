@@ -84,7 +84,7 @@ public class OscillatorSimulation {
 
             // Making the Verlet step
             this.integrator.verlet(PARTICLE, OFORCE);
-            PARTICLE.update();
+            //PARTICLE.update();
 
             // Updating the time
             totalTime += this.dt;
@@ -97,11 +97,11 @@ public class OscillatorSimulation {
         int index = -1;
 
         while (this.totalTime < this.tf){
-            // Make the gear step
-            this.integrator.gearPredictorCorrector(PARTICLE, OFORCE);
-
             // Checking if results can be stored
             index = this.checkAndStoreResults(index, PARTICLE.getX());
+
+            // Make the gear step
+            this.integrator.gearPredictorCorrector(PARTICLE, OFORCE);
 
             // Updating the time
             this.totalTime += this.dt;

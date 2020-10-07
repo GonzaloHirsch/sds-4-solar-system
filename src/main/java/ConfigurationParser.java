@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class ConfigurationParser {
-    public static double areaLength;
-    public static Map<Integer, Particle> particles = new HashMap<>();
+    public final static Map<Integer, Particle> particles = new HashMap<>();
 
     /**
      * Parses the files given with the static and dynamic information in order to configure the initial state of GOL
@@ -23,9 +22,6 @@ public class ConfigurationParser {
         File file = new File(staticFileName);
         Scanner sc = new Scanner(file);
 
-        // Parsing the area length
-        areaLength = sc.nextDouble();
-
         int particleCount = 0;
 
         while (sc.hasNext()){
@@ -33,7 +29,7 @@ public class ConfigurationParser {
             double mass = sc.nextDouble();
             double radius = sc.nextDouble();
 
-            // Generating the particle and adding it
+            // Generating the new particle
             Particle p = new Particle(particleCount, radius, mass);
             particles.put(particleCount, p);
 
