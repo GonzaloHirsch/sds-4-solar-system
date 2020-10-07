@@ -59,6 +59,14 @@ public class ConfigurationParser {
             p.setY(y);
             p.setVx(vx);
             p.setVy(vy);
+            if (particleCount == 0){
+                p.setFutureX(0);
+                p.setFutureVx(0);
+                p.setFutureAx(0);
+                p.setFutureY(0);
+                p.setFutureVy(0);
+                p.setFutureAy(0);
+            }
             particles.put(particleCount, p);
 
             particleCount++;

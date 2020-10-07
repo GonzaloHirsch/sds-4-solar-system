@@ -236,13 +236,14 @@ public class SolarSystemSimulation {
         Vector2D force;
 
         // We predict the values for each of the particles
-        for (int i = 0; i < this.particlesToSimulate; i++){
+        for (int i = 1; i < this.particlesToSimulate; i++){
             predictions = new double[2][];
             p = this.particles[i];
 
             // Making the predictions and storing them
             predictions[X_VALUES] = this.makeGearPredictions(this.gearDerivatives.get(p.getId())[X_VALUES]);
             predictions[Y_VALUES] = this.makeGearPredictions(this.gearDerivatives.get(p.getId())[Y_VALUES]);
+
             this.gearPredictions.put(p.getId(), predictions);
 
             // Updating the particle with the predictions
@@ -250,7 +251,7 @@ public class SolarSystemSimulation {
         }
 
         // We estimate the force for each particle
-        for (int i = 0; i < this.particlesToSimulate; i++){
+        for (int i = 1; i < this.particlesToSimulate; i++){
             p = this.particles[i];
 
             // Recovering the predictions and derivatives
