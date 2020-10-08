@@ -3,6 +3,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SolarSystemSimulation {
@@ -19,7 +20,7 @@ public class SolarSystemSimulation {
     // Time -> Array of positions and velocities
     // Expected size of the matrix is 4x4, to hold the X,Y,Vx,Vy for each of the particles
     // Size can be 3x4 in case the spaceship is not taken into account
-    private final ArrayList<ImmutablePair<Double, double[][]>> results;
+    private final List<ImmutablePair<Double, double[][]>> results;
 
     // Array to hold the particles in order to improve code
     private final Particle[] particles;
@@ -65,7 +66,7 @@ public class SolarSystemSimulation {
     //                                 SIMULATION RUNNING
     /////////////////////////////////////////////////////////////////////////////////////
 
-    public ArrayList<ImmutablePair<Double, double[][]>> simulateSolarSystem(){
+    public List<ImmutablePair<Double, double[][]>> simulateSolarSystem(){
         int index = -1;
 
         while (this.totalTime < this.tf){
@@ -82,7 +83,7 @@ public class SolarSystemSimulation {
         return this.results;
     }
 
-    public ArrayList<ImmutablePair<Double, double[][]>> simulateSpaceshipTraveling(){
+    public List<ImmutablePair<Double, double[][]>> simulateSpaceshipTraveling(){
         int index = -1;
 
         while (this.totalTime < this.tf){

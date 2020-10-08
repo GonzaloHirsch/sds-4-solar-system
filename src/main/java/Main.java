@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Main {
     private static final String BEEMAN_FILE = "./parsable_files/beeman.txt";
@@ -36,7 +38,7 @@ public class Main {
                     System.out.println("File not found");
                     System.exit(1);
                 }
-                runSimulation(OptionsParser.totalTime, OptionsParser.delta, OptionsParser.timeMultiplicator);
+                runSimulation(OptionsParser.simulationOption, OptionsParser.totalTime, OptionsParser.delta, OptionsParser.timeMultiplicator);
                 break;
         }
 
@@ -81,11 +83,20 @@ public class Main {
         }
     }
 
-    private static void runSimulation(double tf, double dt, int tm){
+    private static void runSimulation(OptionsParser.SimulationOptions option, double tf, double dt, int tm){
         SolarSystemSimulation sss = new SolarSystemSimulation(tf, dt, tm, false, ConfigurationParser.particles.get(0), ConfigurationParser.particles.get(1), ConfigurationParser.particles.get(2), ConfigurationParser.particles.get(3));
 
         // Simulating the system
-        ArrayList<ImmutablePair<Double, double[][]>> results = sss.simulateSolarSystem();
+        List<ImmutablePair<Double, double[][]>> results = Collections.emptyList();
+
+        switch (option){
+            case RUN_WITH_SHIP:
+                results = sss.simulateSpaceshipTraveling();
+                break;
+            case RUN_NO_SHIP:
+                results = sss.simulateSolarSystem();
+                break;
+        }
 
         // Generating the output
         GenerateOutputFileForSolarSystem(results, SIMULATION_FILE);
@@ -120,7 +131,7 @@ public class Main {
         }
     }
 
-    private static void GenerateOutputFileForSolarSystem(ArrayList<ImmutablePair<Double, double[][]>> results, String filename){
+    private static void GenerateOutputFileForSolarSystem(List<ImmutablePair<Double, double[][]>> results, String filename){
         try {
             BufferedWriter bf = new BufferedWriter(new FileWriter(filename, false));
 

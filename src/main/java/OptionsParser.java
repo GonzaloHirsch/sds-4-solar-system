@@ -4,6 +4,7 @@ import org.apache.commons.cli.*;
 public class OptionsParser {
     protected static RunOptions option;
     protected static NumericalOptions numericalOption;
+    protected static SimulationOptions simulationOption;
     protected static Double delta;
     protected static Double totalTime;
     protected static Integer timeMultiplicator;
@@ -31,7 +32,7 @@ public class OptionsParser {
         options.addOption(PARAM_TM, "time_multiplicator", true, "Time multiplicator for output");
         options.addOption(PARAM_RA, "run_analytical", false, "Run the analytical solution");
         options.addOption(PARAM_RN, "run_numerical", true, "Run the numerical solution");
-        options.addOption(PARAM_RS, "run_simulation", false, "Run the simulation");
+        options.addOption(PARAM_RS, "run_simulation", true, "Run the simulation");
         options.addOption(PARAM_DF, "dynamic_file", true, "Path to the file with the dynamic values.");
         options.addOption(PARAM_SF, "static_file", true, "Path to the file with the static values.");
         return options;
@@ -104,6 +105,13 @@ public class OptionsParser {
                 // Parsing the file paths
                 staticFile = cmd.getOptionValue(PARAM_SF);
                 dynamicFile = cmd.getOptionValue(PARAM_DF);
+
+                // Getting the simulation option
+                simulationOption = SimulationOptions.FromValue(cmd.getOptionValue(PARAM_RS));
+                if (simulationOption == null){
+                    System.out.println("Invalid simulation option selected");
+                    System.exit(1);
+                }
             }
         } catch (ParseException e) {
             System.out.println("Unknown command used");
@@ -144,6 +152,27 @@ public class OptionsParser {
         public static NumericalOptions FromValue(String s){
             s = s.toLowerCase();
             for (NumericalOptions opt : NumericalOptions.values()){
+                if (opt.value.equals(s)){
+                    return opt;
+                }
+            }
+            return null;
+        }
+    }
+
+    public enum SimulationOptions{
+        RUN_WITH_SHIP("ws"),
+        RUN_NO_SHIP("ns");
+
+        private final String value;
+
+        private SimulationOptions(String s){
+            this.value = s;
+        }
+
+        public static SimulationOptions FromValue(String s){
+            s = s.toLowerCase();
+            for (SimulationOptions opt : SimulationOptions.values()){
                 if (opt.value.equals(s)){
                     return opt;
                 }
