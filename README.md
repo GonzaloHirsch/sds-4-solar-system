@@ -11,20 +11,50 @@ spaceship_mass spaceship_radius
 ```
 
 ### Dynamic File
+The dynamic file contains the positions and velocities of the Sun, Earth, Mars and Spaceship. The contents of the file are:
+```
+0
+sun_x sun_y sun_vx sun_vy
+earth_x earth_y earth_vx earth_vy
+mars_x mars_y mars_vx mars_vy
+ship_x ship_y ship_vx ship_vy
+```
 
 **NOTE:** The information for the static data is given by NASA and the assignment
 
-## Pre Processing
-In order to obtain the velocity and position of the ship, we use a script to calculate it:
+### Output File
+the output file contains the output of the simulation, every N*dt. The contents are:
 ```
-./preprocessing/calculate_spaceship_data.py -V 8 -v 7.12 -o 1500
+0
+sun_x sun_y sun_vx sun_vy
+earth_x earth_y earth_vx earth_vy
+mars_x mars_y mars_vx mars_vy
+ship_x ship_y ship_vx ship_vy
+.
+.
+.
+K*dt
+sun_x_ sun_y sun_vx sun_vy
+earth_x earth_y earth_vx earth_vy
+mars_x mars_y mars_vx mars_vy
+ship_x ship_y ship_vx ship_vy
 ```
 
-The -V parameter is the orbital velocity of the station, -v parameter is the orbital velocity of the ship and -o is the orbital distance of the station. Units are in km and km/s
+## Pre Processing
+In order to obtain the velocity and position of the ship, we use a python script to calculate it:
+```
+python3 ./preprocessing/calculate_spaceship_data.py -V 7.12 -v 8 -o 1500
+```
+
+The -V parameter is the orbital velocity of the station, -v parameter is the orbital velocity of the ship and -o is the orbital distance of the station. 
+
+Units are in km and km/s.
 
 ## Simulation
 ### Singular Run
-Before running the script, it is needed permissions:
+It runs a simulation given the delta of time.
+
+Before running the script, it needs permission:
 ```
 chmod u+x ./scripts/run_oscillator.sh
 ```
@@ -39,7 +69,7 @@ Where `0.0001` is the delta of time, and `50` is the amount of delta of time to 
 ### Multiple Run
 Another option to generate data is to run the script that generates data using dt from 10^-2 to 10^-8
 
-Before running the script, it is needed permissions:
+Before running the script, it needs permission:
 ```
 chmod u+x ./scripts/run_oscillator_all.sh
 ```
@@ -54,7 +84,7 @@ Where `20` is the amount of delta of time to be skipped each time when generatin
 ### System Simulation without Ship
 This option is to run the simulation without the ship.
 
-Before running the script, it is needed permissions:
+Before running the script, it needs permission:
 ```
 chmod u+x ./scripts/run_simulation.sh
 ```
@@ -71,7 +101,7 @@ The present configuration is delta of 0.1 second, taking measurements every 2160
 ### System Simulation with Ship
 This option is to run the simulation with the ship.
 
-Before running the script, it is needed permissions:
+Before running the script, it needs permission:
 ```
 chmod u+x ./scripts/run_simulation.sh
 ```
@@ -93,7 +123,7 @@ python3 ./post/post_oscillator.py -t p
 ```
 
 ### Oscillator Extract Errors
-In order to calculate and extract the Mean Cuadratic Error from the simulation, we run:
+In order to calculate and extract the Mean Quadratic Error from the simulation, we run:
 ```
 python3 ./post/post_oscillator.py -t ee -dt 0.001
 ```

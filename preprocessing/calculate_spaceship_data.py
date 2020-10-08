@@ -28,8 +28,8 @@ def calculate(ship_velocity = SHIP_ORBITAL_VELOCITY, station_velocity = STATION_
     ship_y_pos = math.sin(alpha) * ship_distance_to_sun
 
     # Calculating velocity components
-    ship_x_vel = math.sin(alpha) * (ship_velocity + station_velocity) + EARTH_X_VEL
-    ship_y_vel = math.cos(alpha) * (ship_velocity + station_velocity) + EARTH_Y_VEL
+    ship_x_vel = (math.sin(alpha) * (ship_velocity + station_velocity)) + EARTH_X_VEL
+    ship_y_vel = (math.cos(alpha) * (ship_velocity + station_velocity)) + EARTH_Y_VEL
 
     print("Data for spaceship is:")
     print("X POSITION:", ship_x_pos)
