@@ -67,6 +67,7 @@ python3 ./preprocessing/calculate_spaceship_data.py -V 7.12 -v 8 -o 1500
 ```
 
 The -V parameter is the orbital velocity of the station, -v parameter is the orbital velocity of the ship and -o is the orbital distance of the station. 
+Beware that if your ship will not initiate flight at t = 0, the -v must be 0 km/s.
 
 Units are in km and km/s.
 
@@ -111,12 +112,12 @@ chmod u+x ./scripts/run_simulation.sh
 
 To run the simulation, the script can be used. It runs the simulation and post processes information to generate animation file:
 ```
-./scripts/run_simulation.sh 0.1 216000 31536000 ns
+./scripts/run_simulation.sh 0.1 216000 31536000 ns 0
 ```
 
 The first argument is the delta time, the second argument is the delta multiplicator, the third argument is the total time and the fourth argument indicates whether or not the ship is simulated(ws/ns). Times are in seconds.
 
-The present configuration is delta of 0.1 second, taking measurements every 216000 dts (6 hours), and the simulation runs for 31536000 seconds (365 days). Without the ship. 
+The present configuration is delta of 0.1 second, taking measurements every 216000 dts (6 hours), and the simulation runs for 31536000 seconds (365 days). Without the ship. Blastoff at T minus 0 seconds
 
 ### System Simulation with Ship
 This option is to run the simulation with the ship.
@@ -128,12 +129,12 @@ chmod u+x ./scripts/run_simulation.sh
 
 To run the simulation, the script can be used. It runs the simulation and post processes information to generate animation file:
 ```
-./scripts/run_simulation.sh 0.1 216000 31536000 ws
+./scripts/run_simulation.sh 0.1 216000 31536000 ws 10
 ```
 
 The first argument is the delta time, the second argument is the delta multiplicator, the third argument is the total time and the fourth argument indicates whether or not the ship is simulated(ws/ns). Times are in seconds.
 
-The present configuration is delta of 0.1 second, taking measurements every 216000 dts (6 hours), and the simulation runs for 31536000 seconds (365 days). With the ship .
+The present configuration is delta of 0.1 second, taking measurements every 216000 dts (6 hours), and the simulation runs for 31536000 seconds (365 days). With the ship . Blastoff T minus 10 seconds
 
 ## Post Processing
 ### Oscillator Trajectory Graph

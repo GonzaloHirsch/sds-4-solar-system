@@ -15,6 +15,10 @@ public class SolarSystemSimulation {
     private final double dt;
     // Time multiplicator
     private final int tm;
+    // Spaceship is in the air
+    private boolean isInFlight;
+    // Time since start of simulation that the spaceship must wait before blastoff
+    private double blastoffTime;
 
     // Structure for the results, it is a list that contains pairs of:
     // Time -> Array of positions and velocities
@@ -42,10 +46,14 @@ public class SolarSystemSimulation {
     // Gear predictor delta powers and factorials for reduced computation
     private double[] gearDeltaFactorials;
 
-    public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship){
+    public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship, double blastoffTime){
         this.tf = tf;
         this.dt = dt;
         this.tm = tm;
+        this.blastoffTime = blastoffTime;
+
+        // FIXME puedo hacer esto con double?
+        this.isInFlight = (blastoffTime == 0.0);
 
         // Creating the structure for results, we store every tm*dt results
         int rows = (int) Math.floor(this.tf/(this.tm * this.dt)) + 1;
@@ -57,6 +65,10 @@ public class SolarSystemSimulation {
 
         // Initializing the gear data
         this.initGearData();
+    }
+
+    public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship){
+        this(tf, dt, tm, sun, earth, mars, spaceship, 0.0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
