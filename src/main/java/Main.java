@@ -84,7 +84,7 @@ public class Main {
     }
 
     private static void runSimulation(OptionsParser.SimulationOptions option, double tf, double dt, int tm){
-        SolarSystemSimulation sss = new SolarSystemSimulation(tf, dt, tm, false, ConfigurationParser.particles.get(0), ConfigurationParser.particles.get(1), ConfigurationParser.particles.get(2), ConfigurationParser.particles.get(3));
+        SolarSystemSimulation sss = new SolarSystemSimulation(tf, dt, tm, ConfigurationParser.particles.get(0), ConfigurationParser.particles.get(1), ConfigurationParser.particles.get(2), ConfigurationParser.particles.get(3));
 
         // Simulating the system
         List<ImmutablePair<Double, double[][]>> results = Collections.emptyList();

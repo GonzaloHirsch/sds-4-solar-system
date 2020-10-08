@@ -14,6 +14,14 @@ spaceship_mass spaceship_radius
 
 **NOTE:** The information for the static data is given by NASA and the assignment
 
+## Pre Processing
+In order to obtain the velocity and position of the ship, we use a script to calculate it:
+```
+./preprocessing/calculate_spaceship_data.py -V 8 -v 7.12 -o 1500
+```
+
+The -V parameter is the orbital velocity of the station, -v parameter is the orbital velocity of the ship and -o is the orbital distance of the station. Units are in km and km/s
+
 ## Simulation
 ### Singular Run
 Before running the script, it is needed permissions:
@@ -48,17 +56,34 @@ This option is to run the simulation without the ship.
 
 Before running the script, it is needed permissions:
 ```
-chmod u+x ./scripts/run_simulation_no_ship.sh
+chmod u+x ./scripts/run_simulation.sh
 ```
 
 To run the simulation, the script can be used. It runs the simulation and post processes information to generate animation file:
 ```
-./scripts/run_simulation_no_ship.sh 1 1800 31536000
+./scripts/run_simulation.sh 0.1 216000 31536000 ns
 ```
 
-The first argument is the delta time, the second argument is the delta multiplicator, and the third argument is the total time. Times are in seconds.
+The first argument is the delta time, the second argument is the delta multiplicator, the third argument is the total time and the fourth argument indicates whether or not the ship is simulated(ws/ns). Times are in seconds.
 
-The present configuration is delta of 1 second, taking measurements every 1800 dts (30 minuts), and the simulation runs for 31536000 seconds (365 days)  
+The present configuration is delta of 0.1 second, taking measurements every 216000 dts (6 hours), and the simulation runs for 31536000 seconds (365 days). Without the ship. 
+
+### System Simulation with Ship
+This option is to run the simulation with the ship.
+
+Before running the script, it is needed permissions:
+```
+chmod u+x ./scripts/run_simulation.sh
+```
+
+To run the simulation, the script can be used. It runs the simulation and post processes information to generate animation file:
+```
+./scripts/run_simulation.sh 0.1 216000 31536000 ws
+```
+
+The first argument is the delta time, the second argument is the delta multiplicator, the third argument is the total time and the fourth argument indicates whether or not the ship is simulated(ws/ns). Times are in seconds.
+
+The present configuration is delta of 0.1 second, taking measurements every 216000 dts (6 hours), and the simulation runs for 31536000 seconds (365 days). With the ship .
 
 ## Post Processing
 ### Oscillator Trajectory Graph
@@ -82,3 +107,14 @@ python3 ./post/post_oscillator.py -t pe
 ```
 
 This will generate a plot in logarithmic scales
+
+## Visualization
+Ovito is used for this.
+
+In order to generate the animation files, a script can be used to convert simulation output into an animation file:
+```
+python3 ./visualization/process.py
+```
+
+**NOTE:** Scripts mentioned before already run this command, it is not necessary to run it, but if changes are introduced, it should be used.
+**NOTE-2:** This script changes the radius of the objects in order to make them visible in the animation because normal radius would be very small and not/barely visible.

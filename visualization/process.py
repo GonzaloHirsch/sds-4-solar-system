@@ -11,16 +11,13 @@ from matplotlib.ticker import (MultipleLocator, FormatStrFormatter, AutoMinorLoc
 INPUT_FILE = "./parsable_files/output.txt"
 OUTPUT_FILE = "./parsable_files/animation.xyz"
 
-PROCESS_NO_SHIP = "ns"
-PROCESS_WITH_SHIP = "ws"
-
 MAX_MARS_DISTANCE = 250 * (10**6)
 
 radius = [695700, 6371.01, 3389.92, 500]
 
 SUN_MULTIPLICATOR = 50
 PLANET_MULTIPLICATOR = 1000
-SHIP_MULTIPLICATOR = 10000
+SHIP_MULTIPLICATOR = 7500
 visualizing_radius = [radius[0] * SUN_MULTIPLICATOR, radius[1] * PLANET_MULTIPLICATOR, radius[2] * PLANET_MULTIPLICATOR, radius[3] * SHIP_MULTIPLICATOR]
 
 COLOR_SUN = [235/255, 192/255, 52/255]
@@ -29,7 +26,7 @@ COLOR_MARS = [199/255, 59/255, 44/255]
 COLOR_SHIP = [138/255, 135/255, 135/255]
 COLORS = [COLOR_SUN, COLOR_EARTH, COLOR_MARS, COLOR_SHIP]
 
-def generate_system_without_ship_frames(filename, outfilename):
+def generate_system_frames(filename, outfilename):
     f = open(filename, 'r')
 
     # Extract data
@@ -82,13 +79,10 @@ def main():
     parser = argparse.ArgumentParser(description="Post processing to generate animation frames")
 
     # add arguments
-    parser.add_argument('-t', dest='process_type', required=True)
+    # parser.add_argument('-t', dest='process_type', required=True)
     args = parser.parse_args()
 
-    if args.process_type == PROCESS_NO_SHIP:
-        generate_system_without_ship_frames(INPUT_FILE, OUTPUT_FILE)
-    elif args.process_type == PROCESS_WITH_SHIP:
-        generate_system_without_ship_frames(INPUT_FILE, OUTPUT_FILE)
+    generate_system_frames(INPUT_FILE, OUTPUT_FILE)
 
 # call main
 if __name__ == '__main__':

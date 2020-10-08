@@ -26,7 +26,7 @@ public class SolarSystemSimulation {
     private final Particle[] particles;
 
     // Variable to define how many of the particles we take into account
-    private final int particlesToSimulate;
+    private int particlesToSimulate = 4;
 
     // Variable to hold the gear predictions and derivatives for each particle
     private final Map<Integer, double[][]> gearDerivatives = new HashMap<>();
@@ -42,16 +42,13 @@ public class SolarSystemSimulation {
     // Gear predictor delta powers and factorials for reduced computation
     private double[] gearDeltaFactorials;
 
-    public SolarSystemSimulation(double tf, double dt, int tm, boolean includeShipInSimulation, Particle sun, Particle earth, Particle mars, Particle spaceship){
+    public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship){
         this.tf = tf;
         this.dt = dt;
         this.tm = tm;
 
-        // If the ship is included, we simulate the 4 particles, if not, we simulate the first 3
-        this.particlesToSimulate = includeShipInSimulation ? 4 : 3;
-
         // Creating the structure for results, we store every tm*dt results
-        int rows = (int) Math.floor(this.tf/(this.tm * this.dt));
+        int rows = (int) Math.floor(this.tf/(this.tm * this.dt)) + 1;
         // We have the number of rows, so we specify initial capacity to improve performance
         this.results = new ArrayList<>(rows);
 
@@ -67,23 +64,18 @@ public class SolarSystemSimulation {
     /////////////////////////////////////////////////////////////////////////////////////
 
     public List<ImmutablePair<Double, double[][]>> simulateSolarSystem(){
-        int index = -1;
-
-        while (this.totalTime < this.tf){
-            // Checking if results can be stored
-            index = this.checkAndStoreResults(index);
-
-            // Running the Gear method
-            this.runGearPredictorCorrectorMethod();
-
-            // Updating the time
-            this.totalTime += this.dt;
-        }
-
-        return this.results;
+        // Simulate without the ship
+        this.particlesToSimulate = 3;
+        return this.simulateSystem();
     }
 
     public List<ImmutablePair<Double, double[][]>> simulateSpaceshipTraveling(){
+        // Simulate with the ship
+        this.particlesToSimulate = 4;
+        return this.simulateSystem();
+    }
+
+    private List<ImmutablePair<Double, double[][]>> simulateSystem(){
         int index = -1;
 
         while (this.totalTime < this.tf){
