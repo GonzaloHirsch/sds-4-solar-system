@@ -4,6 +4,9 @@ public final class Constants {
     public static final double EARTH_MASS = 5.97219 * Math.pow(10, 24);
     public static final double MARS_MASS = 6.4171 * Math.pow(10, 23);
     public static final double SHIP_MASS = 500000;
+    public static final double STATION_ORBITAL_VELOCITY = 7.12;
+    public static final double STATION_ORBITAL_DISTANCE = 1500;
+    public static final double SHIP_INITIAL_VELOCITY = 8;
     public static final int SHIP_INDEX = 3;
 
     // Universal Gravitation Constant

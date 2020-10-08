@@ -52,9 +52,6 @@ public class SolarSystemSimulation {
         this.tm = tm;
         this.blastoffTime = blastoffTime;
 
-        // FIXME puedo hacer esto con double?
-        this.isInFlight = (blastoffTime == 0.0);
-
         // Creating the structure for results, we store every tm*dt results
         int rows = (int) Math.floor(this.tf/(this.tm * this.dt)) + 1;
         // We have the number of rows, so we specify initial capacity to improve performance
@@ -65,6 +62,14 @@ public class SolarSystemSimulation {
 
         // Initializing the gear data
         this.initGearData();
+
+        if (blastoffTime == 0.0) {
+            this.isInFlight = true;
+            this.updateShipForBlastoff();
+        } else {
+            this.isInFlight = false;
+            this.stationaryShip();
+        }
     }
 
     public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship){
@@ -240,6 +245,11 @@ public class SolarSystemSimulation {
         double deltaAx, deltaAy, deltaR2x, deltaR2y;
         Vector2D force;
 
+        // If the ship must blastoff, calculate new velocities
+        if (!this.isInFlight && this.blastoffTime > this.totalTime) {
+            this.updateShipForBlastoff();
+        }
+
         // We predict the values for each of the particles
         for (int i = 1; i < this.particlesToSimulate; i++){
             predictions = new double[2][];
@@ -326,5 +336,41 @@ public class SolarSystemSimulation {
         }
 
         return predictions;
+    }
+
+    /**
+     * Calculate the new velocity of the spaceship when blasting
+     * off and update the particle
+     */
+    private void updateShipForBlastoff() {
+        Particle earth = this.particles[1];
+
+//        double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2), Math.pow(earth.getY(), 2);
+//        double shipDistanceToSun = earthDistanceToSun + Constants.STATION_ORBITAL_DISTANCE + earth.getRadius();
+
+        // theta value from polar coordinate (r, theta)
+        double theta = Math.atan2(earth.getY(), earth.getX());
+
+//        this.particles[Constants.SHIP_INDEX].setX(Math.cos(theta) * shipDistanceToSun);
+//        this.particles[Constants.SHIP_INDEX].setY(Math.sin(theta) * shipDistanceToSun);
+        this.particles[Constants.SHIP_INDEX].setVx(Math.sin(theta) * (Constants.SHIP_INITIAL_VELOCITY + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx());
+        this.particles[Constants.SHIP_INDEX].setVy(Math.cos(theta) * (Constants.SHIP_INITIAL_VELOCITY + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy());
+
+        this.isInFlight = true;
+    }
+
+    private void stationaryShip() {
+        Particle earth = this.particles[1];
+
+//        double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2), Math.pow(earth.getY(), 2);
+//        double shipDistanceToSun = earthDistanceToSun + Constants.STATION_ORBITAL_DISTANCE + earth.getRadius();
+
+        // theta value from polar coordinate (r, theta)
+        double theta = Math.atan2(earth.getY(), earth.getX());
+
+//        this.particles[Constants.SHIP_INDEX].setX(Math.cos(theta) * shipDistanceToSun);
+//        this.particles[Constants.SHIP_INDEX].setY(Math.sin(theta) * shipDistanceToSun);
+        this.particles[Constants.SHIP_INDEX].setVx(Math.sin(theta) * Constants.STATION_ORBITAL_VELOCITY + earth.getVx());
+        this.particles[Constants.SHIP_INDEX].setVy(Math.cos(theta) * Constants.STATION_ORBITAL_VELOCITY + earth.getVy());
     }
 }
