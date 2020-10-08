@@ -75,7 +75,7 @@ fabric.properties
 
 target/
 
-parsable_files/
+
 
 visualization/configuration.ovito
 
@@ -88,3 +88,17 @@ images/
 animations/
 
 bk/
+
+parsable_files/analytic.txt
+
+parsable_files/animation.xyz
+
+parsable_files/beeman.txt
+
+parsable_files/errors_file.txt
+
+parsable_files/gear.txt
+
+parsable_files/output.txt
+
+parsable_files/verlet.txt
