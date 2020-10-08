@@ -271,7 +271,7 @@ public class SolarSystemSimulation {
 
             // Correcting the values
             // corrected_value_q = predicted_value_q + alpha_q * deltaR2 * q! / dt^q
-            for (int j = 0; j < derivatives.length; j++){
+            for (int j = 0; j < derivatives[X_VALUES].length; j++){
                 derivatives[X_VALUES][j] = predictions[X_VALUES][j] + (this.gearAlphas[j] * deltaR2x * (1 / this.gearDeltaFactorials[j]));
                 derivatives[Y_VALUES][j] = predictions[Y_VALUES][j] + (this.gearAlphas[j] * deltaR2y * (1 / this.gearDeltaFactorials[j]));
             }
