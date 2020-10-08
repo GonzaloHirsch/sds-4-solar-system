@@ -23,7 +23,7 @@ ship_x ship_y ship_vx ship_vy
 **NOTE:** The information for the static data is given by NASA and the assignment
 
 ### Output File
-the output file contains the output of the simulation, every N*dt. The contents are:
+The output file contains the output of the simulation, every N*dt. The contents are:
 ```
 0
 sun_x sun_y sun_vx sun_vy
@@ -39,6 +39,26 @@ earth_x earth_y earth_vx earth_vy
 mars_x mars_y mars_vx mars_vy
 ship_x ship_y ship_vx ship_vy
 ```
+
+### Animation File
+The animation file contains the information to use ovito in order to generate an animation. The file format is **XYZ**.
+
+The file contents are:
+```
+Number_of_particles
+<Empty Line>
+sun_radius      sun_x       sun_y       sun_R       sun_G       sun_B
+earth_radius    earth_x     earth_y     earth_R     earth_G     earth_B
+mars_radius     mars_x      mars_y      mars_R      mars_G      mars_B
+ship_radius     ship_x      ship_y      ship_R      ship_G      ship_B
+dummy_1_radius	250000000	250000000	dummy_1_R   dummy_1_G   dummy_1_B
+dummy_2_radius	-250000000	250000000   dummy_2_R   dummy_2_G   dummy_2_B
+dummy_3_radius	250000000	-250000000  dummy_3_R   dummy_3_G   dummy_3_B
+dummy_4_radius	-250000000	-250000000  dummy_4_R   dummy_4_G   dummy_4_B
+```
+
+**NOTE:** Contents are tab(\t) separated
+**NOTE-2:** The RGB contents is the color of the particle
 
 ## Pre Processing
 In order to obtain the velocity and position of the ship, we use a python script to calculate it:

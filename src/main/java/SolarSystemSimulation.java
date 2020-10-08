@@ -78,7 +78,7 @@ public class SolarSystemSimulation {
     private List<ImmutablePair<Double, double[][]>> simulateSystem(){
         int index = -1;
 
-        while (this.totalTime < this.tf){
+        while (this.totalTime <= this.tf){
             // Checking if results can be stored
             index = this.checkAndStoreResults(index);
 
