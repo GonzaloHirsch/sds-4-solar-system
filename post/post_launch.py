@@ -5,11 +5,14 @@ import random as rnd
 import statistics
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+# https://matplotlib.org/3.1.1/gallery/text_labels_and_annotations/date.html
+import matplotlib.dates as mdates
 from matplotlib.ticker import (MultipleLocator, FormatStrFormatter, AutoMinorLocator)
 import datetime
 
 # Files
 INPUT_FILE = "./parsable_files/output.txt"
+DISTANCES_FILE = "./parsable_files/launch_distances.txt"
 
 # Variables
 INITIAL_DATE = datetime.datetime(2020, 9, 28)
@@ -72,7 +75,31 @@ def extract_launch(filename, launch, outfilename):
     wf = open(outfilename, 'a')
     wf.write('{} {} {}\n'.format(INITIAL_DATE + datetime.timedelta(seconds=launch), time_to_min_distance, min_distance))
     wf.close()
-    
+
+# Plots the distances to mars for each launch
+# https://www.kite.com/python/answers/how-to-plot-dates-on-the-x-axis-of-a-matplotlib-plot-in-python
+def plot_launches(filename):
+    f = open(filename, 'r')
+    dates = []
+    distances = []
+
+    for line in f:
+        data = line.rstrip("\n").split(" ")
+        dates.append(data[0])
+        distances.append(float(data[2]))
+
+    f.close()
+
+    x_values = [datetime.datetime.strptime(d,"%d/%m/%Y").date() for d in dates]
+    y_values = distances
+
+    ax = plt.gca()
+    formatter = mdates.DateFormatter("%d-%m-%Y")
+    ax.xaxis.set_major_formatter(formatter)
+    locator = mdates.DayLocator()
+    ax.xaxis.set_major_locator(locator)
+    plt.scatter(x_values, y_values)
+
 # main() function
 def main():
     # Command line args are in sys.argv[1], sys.argv[2] ..
@@ -88,9 +115,9 @@ def main():
     launch_delta = float(args.launch_delta)
 
     if args.process_type == EXTRACT_LAUNCH:
-        extract_launch(INPUT_FILE, launch_delta)
+        extract_launch(INPUT_FILE, launch_delta, DISTANCES_FILE)
     elif args.process_type == PLOT_LAUNCH:
-        extract_launch(INPUT_FILE, launch_delta)
+        plot_launches(INPUT_FILE)
 
 # call main
 if __name__ == '__main__':
