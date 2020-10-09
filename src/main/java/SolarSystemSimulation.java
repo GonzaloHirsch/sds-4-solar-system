@@ -372,37 +372,12 @@ public class SolarSystemSimulation {
         double shipDistanceToSun = earthDistanceToSun + Constants.STATION_ORBITAL_DISTANCE + earth.getRadius();
 
         double theta = Math.atan2(earth.getY(), earth.getX());
-//        if ((earth.getVx() < 0 && earth.getVy() < 0) || (earth.getVx() > 0 && earth.getVy() < 0)) {
-//            theta = (Math.PI - theta);
-//        }
 
         double x = Math.cos(theta) * shipDistanceToSun;
         double y = Math.sin(theta) * shipDistanceToSun;
-        double vx = (Math.signum(earth.getVx()) * Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx());
-        double vy = (Math.signum(earth.getVy()) * Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy());
+        double vx = (Math.signum(earth.getVx()) * Math.abs(Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY)) + earth.getVx());
+        double vy = (Math.signum(earth.getVy()) * Math.abs(Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY)) + earth.getVy());
 
-        System.out.println("VXsin = " + Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY));
-        System.out.println("VYcos = " + Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY));
-
-
-        System.out.println("----------------------");
-        System.out.println("THETA = " + theta);
-        System.out.println("Earth Velocity");
-        System.out.println("VX = " + earth.getVx());
-        System.out.println("VY = " + earth.getVy());
-        System.out.println("VH = " + Math.sqrt(earth.getVx()*earth.getVx() + earth.getVy()*earth.getVy()));
-        System.out.println("Ship Velocity");
-        System.out.println("VX = " + vx);
-        System.out.println("VY = " + vy);
-        System.out.println("VH = " + Math.sqrt(vx*vx + vy*vy));
-        System.out.println("----------------------\nEarth Distance");
-        System.out.println("X = " + earth.getX());
-        System.out.println("Y = " + earth.getY());
-        System.out.println("H = " + earthDistanceToSun);
-        System.out.println("Ship Distance");
-        System.out.println("X = " + x);
-        System.out.println("Y = " + y);
-        System.out.println("H = " + shipDistanceToSun);
         this.particles[Constants.SHIP_INDEX].setX(x);
         this.particles[Constants.SHIP_INDEX].setY(y);
         this.particles[Constants.SHIP_INDEX].setVx(vx);
@@ -410,4 +385,5 @@ public class SolarSystemSimulation {
 
         return new double[]{x, y, vx, vy};
     }
+
 }
