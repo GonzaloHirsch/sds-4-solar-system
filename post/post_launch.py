@@ -73,7 +73,7 @@ def extract_launch(filename, launch, outfilename):
         index += 1
 
     wf = open(outfilename, 'a')
-    wf.write('{} {} {}\n'.format(INITIAL_DATE + datetime.timedelta(seconds=launch), time_to_min_distance, min_distance))
+    wf.write('{} {} {}\n'.format((INITIAL_DATE + datetime.timedelta(seconds=launch)).strftime('%Y-%m-%d'), time_to_min_distance, min_distance))
     wf.close()
 
 # Plots the distances to mars for each launch
@@ -90,7 +90,7 @@ def plot_launches(filename):
 
     f.close()
 
-    x_values = [datetime.datetime.strptime(d,"%d/%m/%Y").date() for d in dates]
+    x_values = [datetime.datetime.strptime(d,"%Y-%m-%d").date() for d in dates]
     y_values = distances
 
     ax = plt.gca()
@@ -99,6 +99,7 @@ def plot_launches(filename):
     locator = mdates.DayLocator()
     ax.xaxis.set_major_locator(locator)
     plt.scatter(x_values, y_values)
+    plt.show()
 
 # main() function
 def main():
@@ -117,7 +118,7 @@ def main():
     if args.process_type == EXTRACT_LAUNCH:
         extract_launch(INPUT_FILE, launch_delta, DISTANCES_FILE)
     elif args.process_type == PLOT_LAUNCH:
-        plot_launches(INPUT_FILE)
+        plot_launches(DISTANCES_FILE)
 
 # call main
 if __name__ == '__main__':

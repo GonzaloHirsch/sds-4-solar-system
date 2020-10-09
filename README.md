@@ -136,6 +136,14 @@ The first argument is the delta time, the second argument is the delta multiplic
 
 The present configuration is delta of 0.1 second, taking measurements every 216000 dts (6 hours), and the simulation runs for 31536000 seconds (365 days). With the ship . Blastoff T minus 10 seconds
 
+### System Simulation with Daily Launches
+Before running the script, it needs permission:
+```
+chmod u+x ./scripts/run_simulation_launch_daily.sh 
+```
+
+
+
 ## Post Processing
 ### Oscillator Trajectory Graph
 In order to plot the trajectory for the oscillators, first the simulation has to be run. To plot the trajectory for the 4 different methods, we run:
