@@ -368,13 +368,16 @@ public class SolarSystemSimulation {
         double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2) + Math.pow(earth.getY(), 2));
         double shipDistanceToSun = earthDistanceToSun + Constants.STATION_ORBITAL_DISTANCE + earth.getRadius();
 
-        // theta value from polar coordinate (r, theta)
         double theta = Math.atan2(earth.getY(), earth.getX());
+        if ((earth.getVx() < 0 && earth.getY() < 0) || (earth.getVx() > 0 && earth.getVy() < 0)) {
+            theta = Math.PI - theta;
+        }
 
         double x = Math.cos(theta) * shipDistanceToSun;
         double y = Math.sin(theta) * shipDistanceToSun;
-        double vx = Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx();
-        double vy = Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy();
+        double vx = (Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx());
+        double vy = (Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy());
+        System.out.println(vx + "\n VY = " + vy);
 
         this.particles[Constants.SHIP_INDEX].setX(x);
         this.particles[Constants.SHIP_INDEX].setY(y);
