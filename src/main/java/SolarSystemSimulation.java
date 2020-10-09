@@ -1,10 +1,7 @@
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SolarSystemSimulation {
     // Total time elapsed
@@ -358,6 +355,9 @@ public class SolarSystemSimulation {
         double[][] derivatives = calculateInitialGearDerivatives(this.particles[Constants.SHIP_INDEX]);
         this.gearDerivatives.put(Constants.SHIP_INDEX, derivatives);
 
+        System.out.println("----------------------\nDerivatives");
+        System.out.println(Arrays.deepToString(this.gearDerivatives.get(Constants.SHIP_INDEX)));
+
         this.isInFlight = true;
     }
 
@@ -378,10 +378,14 @@ public class SolarSystemSimulation {
 
         double x = Math.cos(theta) * shipDistanceToSun;
         double y = Math.sin(theta) * shipDistanceToSun;
-        double vx = (Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx());
-        double vy = (Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy());
+        double vx = (Math.signum(earth.getVx()) * Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx());
+        double vy = (Math.signum(earth.getVy()) * Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy());
 
-        System.out.println("----------------------\nTHETA");
+        System.out.println("VXsin = " + Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY));
+        System.out.println("VYcos = " + Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY));
+
+
+        System.out.println("----------------------");
         System.out.println("THETA = " + theta);
         System.out.println("Earth Velocity");
         System.out.println("VX = " + earth.getVx());
