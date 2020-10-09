@@ -1,10 +1,7 @@
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SolarSystemSimulation {
     // Total time elapsed
@@ -15,6 +12,10 @@ public class SolarSystemSimulation {
     private final double dt;
     // Time multiplicator
     private final int tm;
+    // Spaceship is in the air
+    private boolean isInFlight;
+    // Time since start of simulation that the spaceship must wait before blastoff
+    private double blastoffTime;
 
     // Structure for the results, it is a list that contains pairs of:
     // Time -> Array of positions and velocities
@@ -42,10 +43,11 @@ public class SolarSystemSimulation {
     // Gear predictor delta powers and factorials for reduced computation
     private double[] gearDeltaFactorials;
 
-    public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship){
+    public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship, double blastoffTime){
         this.tf = tf;
         this.dt = dt;
         this.tm = tm;
+        this.blastoffTime = blastoffTime;
 
         // Creating the structure for results, we store every tm*dt results
         int rows = (int) Math.floor(this.tf/(this.tm * this.dt)) + 1;
@@ -55,8 +57,20 @@ public class SolarSystemSimulation {
         // Initializing the particle array
         this.particles = new Particle[]{sun, earth, mars, spaceship};
 
+        if (blastoffTime == 0.0) {
+            this.isInFlight = true;
+            this.updateShipForBlastoff();
+        } else {
+            this.isInFlight = false;
+            this.stationaryShip();
+        }
+
         // Initializing the gear data
         this.initGearData();
+    }
+
+    public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship){
+        this(tf, dt, tm, sun, earth, mars, spaceship, 0.0);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -228,6 +242,11 @@ public class SolarSystemSimulation {
         double deltaAx, deltaAy, deltaR2x, deltaR2y;
         Vector2D force;
 
+        // If the ship must blastoff, calculate new velocities
+        if (!this.isInFlight && this.blastoffTime < this.totalTime) {
+            this.updateShipForBlastoff();
+        }
+
         // We predict the values for each of the particles
         for (int i = 1; i < this.particlesToSimulate; i++){
             predictions = new double[2][];
@@ -315,4 +334,56 @@ public class SolarSystemSimulation {
 
         return predictions;
     }
+
+    /**
+     * Calculate the new velocity of the spaceship when blasting
+     * off and update the particle
+     */
+    private void updateShipForBlastoff() {
+        double[] values = updateShip(Constants.SHIP_INITIAL_VELOCITY);
+
+        // Updating gear derivatives
+        // This case only happens when the blastoff time is 0, because it initializes before the gear derivatives and can throw Null Pointer
+        // FIXME: Ver si podemos modularizarlo mejor esto
+//        if (this.gearDerivatives.containsKey(Constants.SHIP_INDEX)){
+//            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][0] = values[0];
+//            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][0] = values[1];
+//            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][1] = values[2];
+//            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][1] = values[3];
+//        }
+
+        double[][] derivatives = calculateInitialGearDerivatives(this.particles[Constants.SHIP_INDEX]);
+        this.gearDerivatives.put(Constants.SHIP_INDEX, derivatives);
+
+        System.out.println("----------------------\nDerivatives");
+        System.out.println(Arrays.deepToString(this.gearDerivatives.get(Constants.SHIP_INDEX)));
+
+        this.isInFlight = true;
+    }
+
+    private void stationaryShip() {
+        updateShip(0.0);
+    }
+
+    private double[] updateShip(double initialVelocity) {
+        Particle earth = this.particles[1];
+
+        double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2) + Math.pow(earth.getY(), 2));
+        double shipDistanceToSun = earthDistanceToSun + Constants.STATION_ORBITAL_DISTANCE + earth.getRadius();
+
+        double theta = Math.atan2(earth.getY(), earth.getX());
+
+        double x = Math.cos(theta) * shipDistanceToSun;
+        double y = Math.sin(theta) * shipDistanceToSun;
+        double vx = (Math.signum(earth.getVx()) * Math.abs(Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY)) + earth.getVx());
+        double vy = (Math.signum(earth.getVy()) * Math.abs(Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY)) + earth.getVy());
+
+        this.particles[Constants.SHIP_INDEX].setX(x);
+        this.particles[Constants.SHIP_INDEX].setY(y);
+        this.particles[Constants.SHIP_INDEX].setVx(vx);
+        this.particles[Constants.SHIP_INDEX].setVy(vy);
+
+        return new double[]{x, y, vx, vy};
+    }
+
 }

@@ -10,6 +10,7 @@ public class OptionsParser {
     protected static Integer timeMultiplicator;
     protected static String dynamicFile;
     protected static String staticFile;
+    protected static double blastoffTime = 0.0;
 
     private static final String PARAM_DT = "dt";
     private static final String PARAM_TF = "tf";
@@ -19,6 +20,7 @@ public class OptionsParser {
     private static final String PARAM_RS = "rs";
     private static final String PARAM_DF = "df";
     private static final String PARAM_SF = "sf";
+    private static final String PARAM_BT = "bt";
 
     /**
      * Generates the options for the help.
@@ -35,6 +37,7 @@ public class OptionsParser {
         options.addOption(PARAM_RS, "run_simulation", true, "Run the simulation");
         options.addOption(PARAM_DF, "dynamic_file", true, "Path to the file with the dynamic values.");
         options.addOption(PARAM_SF, "static_file", true, "Path to the file with the static values.");
+        options.addOption(PARAM_BT, "blastoff_time", true, "Time from the start of the simulation blastoff of the ship will occur");
         return options;
     }
 
@@ -112,6 +115,10 @@ public class OptionsParser {
                     System.out.println("Invalid simulation option selected");
                     System.exit(1);
                 }
+            }
+
+            if (cmd.hasOption(PARAM_BT)) {
+                blastoffTime = Double.parseDouble(cmd.getOptionValue(PARAM_BT));
             }
         } catch (ParseException e) {
             System.out.println("Unknown command used");
