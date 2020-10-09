@@ -348,12 +348,15 @@ public class SolarSystemSimulation {
         // Updating gear derivatives
         // This case only happens when the blastoff time is 0, because it initializes before the gear derivatives and can throw Null Pointer
         // FIXME: Ver si podemos modularizarlo mejor esto
-        if (this.gearDerivatives.containsKey(Constants.SHIP_INDEX)){
-            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][0] = values[0];
-            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][0] = values[1];
-            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][1] = values[2];
-            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][1] = values[3];
-        }
+//        if (this.gearDerivatives.containsKey(Constants.SHIP_INDEX)){
+//            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][0] = values[0];
+//            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][0] = values[1];
+//            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][1] = values[2];
+//            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][1] = values[3];
+//        }
+
+        double[][] derivatives = calculateInitialGearDerivatives(this.particles[Constants.SHIP_INDEX]);
+        this.gearDerivatives.put(Constants.SHIP_INDEX, derivatives);
 
         this.isInFlight = true;
     }
@@ -369,16 +372,33 @@ public class SolarSystemSimulation {
         double shipDistanceToSun = earthDistanceToSun + Constants.STATION_ORBITAL_DISTANCE + earth.getRadius();
 
         double theta = Math.atan2(earth.getY(), earth.getX());
-        if ((earth.getVx() < 0 && earth.getY() < 0) || (earth.getVx() > 0 && earth.getVy() < 0)) {
-            theta = Math.PI - theta;
-        }
+//        if ((earth.getVx() < 0 && earth.getVy() < 0) || (earth.getVx() > 0 && earth.getVy() < 0)) {
+//            theta = (Math.PI - theta);
+//        }
 
         double x = Math.cos(theta) * shipDistanceToSun;
         double y = Math.sin(theta) * shipDistanceToSun;
         double vx = (Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx());
         double vy = (Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy());
-        System.out.println(vx + "\n VY = " + vy);
 
+        System.out.println("----------------------\nTHETA");
+        System.out.println("THETA = " + theta);
+        System.out.println("Earth Velocity");
+        System.out.println("VX = " + earth.getVx());
+        System.out.println("VY = " + earth.getVy());
+        System.out.println("VH = " + Math.sqrt(earth.getVx()*earth.getVx() + earth.getVy()*earth.getVy()));
+        System.out.println("Ship Velocity");
+        System.out.println("VX = " + vx);
+        System.out.println("VY = " + vy);
+        System.out.println("VH = " + Math.sqrt(vx*vx + vy*vy));
+        System.out.println("----------------------\nEarth Distance");
+        System.out.println("X = " + earth.getX());
+        System.out.println("Y = " + earth.getY());
+        System.out.println("H = " + earthDistanceToSun);
+        System.out.println("Ship Distance");
+        System.out.println("X = " + x);
+        System.out.println("Y = " + y);
+        System.out.println("H = " + shipDistanceToSun);
         this.particles[Constants.SHIP_INDEX].setX(x);
         this.particles[Constants.SHIP_INDEX].setY(y);
         this.particles[Constants.SHIP_INDEX].setVx(vx);
