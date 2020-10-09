@@ -60,9 +60,6 @@ public class SolarSystemSimulation {
         // Initializing the particle array
         this.particles = new Particle[]{sun, earth, mars, spaceship};
 
-        // Initializing the gear data
-        this.initGearData();
-
         if (blastoffTime == 0.0) {
             this.isInFlight = true;
             this.updateShipForBlastoff();
@@ -70,6 +67,9 @@ public class SolarSystemSimulation {
             this.isInFlight = false;
             this.stationaryShip();
         }
+
+        // Initializing the gear data
+        this.initGearData();
     }
 
     public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship){
@@ -246,7 +246,7 @@ public class SolarSystemSimulation {
         Vector2D force;
 
         // If the ship must blastoff, calculate new velocities
-        if (!this.isInFlight && this.blastoffTime > this.totalTime) {
+        if (!this.isInFlight && this.blastoffTime < this.totalTime) {
             this.updateShipForBlastoff();
         }
 
@@ -343,6 +343,7 @@ public class SolarSystemSimulation {
      * off and update the particle
      */
     private void updateShipForBlastoff() {
+        System.out.println("READY FOR BLASTOFF!");
         Particle earth = this.particles[1];
 
 //        double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2), Math.pow(earth.getY(), 2);
@@ -353,8 +354,15 @@ public class SolarSystemSimulation {
 
 //        this.particles[Constants.SHIP_INDEX].setX(Math.cos(theta) * shipDistanceToSun);
 //        this.particles[Constants.SHIP_INDEX].setY(Math.sin(theta) * shipDistanceToSun);
-        this.particles[Constants.SHIP_INDEX].setVx(Math.sin(theta) * (Constants.SHIP_INITIAL_VELOCITY + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx());
-        this.particles[Constants.SHIP_INDEX].setVy(Math.cos(theta) * (Constants.SHIP_INITIAL_VELOCITY + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy());
+        double vx = Math.sin(theta) * (Constants.SHIP_INITIAL_VELOCITY + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx();
+        double vy = Math.cos(theta) * (Constants.SHIP_INITIAL_VELOCITY + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy();
+
+        this.particles[Constants.SHIP_INDEX].setVx(vx);
+        this.particles[Constants.SHIP_INDEX].setVy(vy);
+
+        // Updating gear derivatives
+        this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][1] = vx;
+        this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][1] = vy;
 
         this.isInFlight = true;
     }
