@@ -343,7 +343,7 @@ public class SolarSystemSimulation {
      * off and update the particle
      */
     private void updateShipForBlastoff() {
-        System.out.println("READY FOR BLASTOFF!");
+//        System.out.println("READY FOR BLASTOFF!");
         Particle earth = this.particles[1];
 
 //        double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2), Math.pow(earth.getY(), 2);
@@ -361,8 +361,12 @@ public class SolarSystemSimulation {
         this.particles[Constants.SHIP_INDEX].setVy(vy);
 
         // Updating gear derivatives
-        this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][1] = vx;
-        this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][1] = vy;
+        // This case only happens when the blastoff time is 0, because it initializes before the gear derivatives and can throw Null Pointer
+        // FIXME: Ver si podemos modularizarlo mejor esto
+        if (this.gearDerivatives.containsKey(Constants.SHIP_INDEX)){
+            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][1] = vx;
+            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][1] = vy;
+        }
 
         this.isInFlight = true;
     }
