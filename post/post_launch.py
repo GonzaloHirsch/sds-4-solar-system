@@ -73,22 +73,39 @@ def extract_launch(filename, launch, outfilename):
         index += 1
 
     wf = open(outfilename, 'a')
-    wf.write('{} {} {}\n'.format((INITIAL_DATE + datetime.timedelta(seconds=launch)).strftime('%Y-%m-%d'), time_to_min_distance, min_distance))
+    # Contents are:
+    # - Date of launch
+    # - Date of launch in seconds
+    # - Time of flight
+    # - Minimum distance to mars
+    wf.write('{} {} {} {}\n'.format((INITIAL_DATE + datetime.timedelta(seconds=launch)).strftime('%Y-%m-%d'), launch, time_to_min_distance, min_distance))
     wf.close()
 
 # Plots the distances to mars for each launch
 # https://www.kite.com/python/answers/how-to-plot-dates-on-the-x-axis-of-a-matplotlib-plot-in-python
+# https://stackoverflow.com/questions/21423158/how-do-i-change-the-range-of-the-x-axis-with-datetimes-in-matplotlib
 def plot_launches(filename):
     f = open(filename, 'r')
     dates = []
+    times = []
+    launches = []
     distances = []
 
     for line in f:
         data = line.rstrip("\n").split(" ")
         dates.append(data[0])
-        distances.append(float(data[2]))
+        launches.append(float(data[1]))
+        times.append(float(data[2]))
+        distances.append(float(data[3]))
 
     f.close()
+
+    min_index = np.argmin(distances)
+    print("Minimum distance to Mars achieved:")
+    print("\tLaunch Day:", dates[min_index], "(" + str(launches[min_index]) + "[s])")
+    print("\tArrival day:", (INITIAL_DATE + datetime.timedelta(seconds=times[min_index])).strftime('%Y-%m-%d') + "[s]")
+    print("\tTime of Flight:", str(times[min_index]) + "[s]")
+    print("\tDistance to Mars:", str(distances[min_index]) + "[km]")
 
     x_values = [datetime.datetime.strptime(d,"%Y-%m-%d").date() for d in dates]
     y_values = distances
@@ -99,6 +116,12 @@ def plot_launches(filename):
     locator = mdates.DayLocator()
     ax.xaxis.set_major_locator(locator)
     plt.scatter(x_values, y_values)
+    # Format the date into months & days
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+    # Change the tick interval
+    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=30))
+    # Puts x-axis labels on an angle
+    plt.gca().xaxis.set_tick_params(rotation = 30)
     plt.show()
 
 # main() function
