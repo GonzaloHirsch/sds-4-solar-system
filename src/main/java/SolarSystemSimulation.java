@@ -343,46 +343,44 @@ public class SolarSystemSimulation {
      * off and update the particle
      */
     private void updateShipForBlastoff() {
-//        System.out.println("READY FOR BLASTOFF!");
-        Particle earth = this.particles[1];
-
-//        double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2), Math.pow(earth.getY(), 2);
-//        double shipDistanceToSun = earthDistanceToSun + Constants.STATION_ORBITAL_DISTANCE + earth.getRadius();
-
-        // theta value from polar coordinate (r, theta)
-        double theta = Math.atan2(earth.getY(), earth.getX());
-
-//        this.particles[Constants.SHIP_INDEX].setX(Math.cos(theta) * shipDistanceToSun);
-//        this.particles[Constants.SHIP_INDEX].setY(Math.sin(theta) * shipDistanceToSun);
-        double vx = Math.sin(theta) * (Constants.SHIP_INITIAL_VELOCITY + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx();
-        double vy = Math.cos(theta) * (Constants.SHIP_INITIAL_VELOCITY + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy();
-
-        this.particles[Constants.SHIP_INDEX].setVx(vx);
-        this.particles[Constants.SHIP_INDEX].setVy(vy);
+        double[] values = updateShip(Constants.SHIP_INITIAL_VELOCITY);
 
         // Updating gear derivatives
         // This case only happens when the blastoff time is 0, because it initializes before the gear derivatives and can throw Null Pointer
         // FIXME: Ver si podemos modularizarlo mejor esto
         if (this.gearDerivatives.containsKey(Constants.SHIP_INDEX)){
-            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][1] = vx;
-            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][1] = vy;
+            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][0] = values[0];
+            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][0] = values[1];
+            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][1] = values[2];
+            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][1] = values[3];
         }
 
         this.isInFlight = true;
     }
 
     private void stationaryShip() {
+        updateShip(0.0);
+    }
+
+    private double[] updateShip(double initialVelocity) {
         Particle earth = this.particles[1];
 
-//        double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2), Math.pow(earth.getY(), 2);
-//        double shipDistanceToSun = earthDistanceToSun + Constants.STATION_ORBITAL_DISTANCE + earth.getRadius();
+        double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2) + Math.pow(earth.getY(), 2));
+        double shipDistanceToSun = earthDistanceToSun + Constants.STATION_ORBITAL_DISTANCE + earth.getRadius();
 
         // theta value from polar coordinate (r, theta)
         double theta = Math.atan2(earth.getY(), earth.getX());
 
-//        this.particles[Constants.SHIP_INDEX].setX(Math.cos(theta) * shipDistanceToSun);
-//        this.particles[Constants.SHIP_INDEX].setY(Math.sin(theta) * shipDistanceToSun);
-        this.particles[Constants.SHIP_INDEX].setVx(Math.sin(theta) * Constants.STATION_ORBITAL_VELOCITY + earth.getVx());
-        this.particles[Constants.SHIP_INDEX].setVy(Math.cos(theta) * Constants.STATION_ORBITAL_VELOCITY + earth.getVy());
+        double x = Math.cos(theta) * shipDistanceToSun;
+        double y = Math.sin(theta) * shipDistanceToSun;
+        double vx = Math.sin(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVx();
+        double vy = Math.cos(theta) * (initialVelocity + Constants.STATION_ORBITAL_VELOCITY) + earth.getVy();
+
+        this.particles[Constants.SHIP_INDEX].setX(x);
+        this.particles[Constants.SHIP_INDEX].setY(y);
+        this.particles[Constants.SHIP_INDEX].setVx(vx);
+        this.particles[Constants.SHIP_INDEX].setVy(vy);
+
+        return new double[]{x, y, vx, vy};
     }
 }
