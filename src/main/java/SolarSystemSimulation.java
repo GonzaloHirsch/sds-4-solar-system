@@ -355,8 +355,8 @@ public class SolarSystemSimulation {
         double[][] derivatives = calculateInitialGearDerivatives(this.particles[Constants.SHIP_INDEX]);
         this.gearDerivatives.put(Constants.SHIP_INDEX, derivatives);
 
-        System.out.println("----------------------\nDerivatives");
-        System.out.println(Arrays.deepToString(this.gearDerivatives.get(Constants.SHIP_INDEX)));
+/*        System.out.println("----------------------\nDerivatives");
+        System.out.println(Arrays.deepToString(this.gearDerivatives.get(Constants.SHIP_INDEX)));*/
 
         this.isInFlight = true;
     }
