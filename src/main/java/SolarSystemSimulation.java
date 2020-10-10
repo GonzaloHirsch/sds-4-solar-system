@@ -16,6 +16,8 @@ public class SolarSystemSimulation {
     private boolean isInFlight;
     // Time since start of simulation that the spaceship must wait before blastoff
     private double blastoffTime;
+    // Initial velocity of the ship
+    private double shipInitialVelocity = Constants.SHIP_INITIAL_VELOCITY;
 
     // Structure for the results, it is a list that contains pairs of:
     // Time -> Array of positions and velocities
@@ -43,11 +45,12 @@ public class SolarSystemSimulation {
     // Gear predictor delta powers and factorials for reduced computation
     private double[] gearDeltaFactorials;
 
-    public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship, double blastoffTime){
+    public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship, double blastoffTime, double shipInitialVelocity){
         this.tf = tf;
         this.dt = dt;
         this.tm = tm;
         this.blastoffTime = blastoffTime;
+        this.shipInitialVelocity = shipInitialVelocity;
 
         // Creating the structure for results, we store every tm*dt results
         int rows = (int) Math.floor(this.tf/(this.tm * this.dt)) + 1;
@@ -70,7 +73,7 @@ public class SolarSystemSimulation {
     }
 
     public SolarSystemSimulation(double tf, double dt, int tm, Particle sun, Particle earth, Particle mars, Particle spaceship){
-        this(tf, dt, tm, sun, earth, mars, spaceship, 0.0);
+        this(tf, dt, tm, sun, earth, mars, spaceship, 0.0, Constants.SHIP_INITIAL_VELOCITY);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -340,7 +343,7 @@ public class SolarSystemSimulation {
      * off and update the particle
      */
     private void updateShipForBlastoff() {
-        double[] values = updateShip(Constants.SHIP_INITIAL_VELOCITY);
+        double[] values = updateShip(this.shipInitialVelocity);
 
         // Updating gear derivatives
         // This case only happens when the blastoff time is 0, because it initializes before the gear derivatives and can throw Null Pointer

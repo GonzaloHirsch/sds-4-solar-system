@@ -38,7 +38,7 @@ public class Main {
                     System.out.println("File not found");
                     System.exit(1);
                 }
-                runSimulation(OptionsParser.simulationOption, OptionsParser.totalTime, OptionsParser.delta, OptionsParser.timeMultiplicator, OptionsParser.blastoffTime);
+                runSimulation(OptionsParser.simulationOption, OptionsParser.totalTime, OptionsParser.delta, OptionsParser.timeMultiplicator, OptionsParser.blastoffTime, OptionsParser.initialVelocity);
                 break;
         }
 
@@ -83,8 +83,8 @@ public class Main {
         }
     }
 
-    private static void runSimulation(OptionsParser.SimulationOptions option, double tf, double dt, int tm, double blastoffTime){
-        SolarSystemSimulation sss = new SolarSystemSimulation(tf, dt, tm, ConfigurationParser.particles.get(0), ConfigurationParser.particles.get(1), ConfigurationParser.particles.get(2), ConfigurationParser.particles.get(3), blastoffTime);
+    private static void runSimulation(OptionsParser.SimulationOptions option, double tf, double dt, int tm, double blastoffTime, double v0){
+        SolarSystemSimulation sss = new SolarSystemSimulation(tf, dt, tm, ConfigurationParser.particles.get(0), ConfigurationParser.particles.get(1), ConfigurationParser.particles.get(2), ConfigurationParser.particles.get(3), blastoffTime, v0);
 
         // Simulating the system
         List<ImmutablePair<Double, double[][]>> results = Collections.emptyList();

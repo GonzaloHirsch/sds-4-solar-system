@@ -11,6 +11,7 @@ public class OptionsParser {
     protected static String dynamicFile;
     protected static String staticFile;
     protected static double blastoffTime = 0.0;
+    protected static double initialVelocity = Constants.SHIP_INITIAL_VELOCITY;
 
     private static final String PARAM_DT = "dt";
     private static final String PARAM_TF = "tf";
@@ -21,6 +22,7 @@ public class OptionsParser {
     private static final String PARAM_DF = "df";
     private static final String PARAM_SF = "sf";
     private static final String PARAM_BT = "bt";
+    private static final String PARAM_V0 = "v0";
 
     /**
      * Generates the options for the help.
@@ -38,6 +40,7 @@ public class OptionsParser {
         options.addOption(PARAM_DF, "dynamic_file", true, "Path to the file with the dynamic values.");
         options.addOption(PARAM_SF, "static_file", true, "Path to the file with the static values.");
         options.addOption(PARAM_BT, "blastoff_time", true, "Time from the start of the simulation blastoff of the ship will occur");
+        options.addOption(PARAM_V0, "initial_velocity", true, "Initial velocity of the ship.");
         return options;
     }
 
@@ -115,10 +118,16 @@ public class OptionsParser {
                     System.out.println("Invalid simulation option selected");
                     System.exit(1);
                 }
-            }
 
-            if (cmd.hasOption(PARAM_BT)) {
-                blastoffTime = Double.parseDouble(cmd.getOptionValue(PARAM_BT));
+                // Blast off time
+                if (cmd.hasOption(PARAM_BT)) {
+                    blastoffTime = Double.parseDouble(cmd.getOptionValue(PARAM_BT));
+                }
+
+                // Initial velocity
+                if (cmd.hasOption(PARAM_V0)) {
+                    initialVelocity = Double.parseDouble(cmd.getOptionValue(PARAM_V0));
+                }
             }
         } catch (ParseException e) {
             System.out.println("Unknown command used");
