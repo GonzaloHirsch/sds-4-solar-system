@@ -34,6 +34,8 @@ PLOT_HOURLY_LAUNCH = "plh"
 PLOT_DAILY_LAUNCH = "pld"
 PLOT_WEEKLY_LAUNCH = "plw"
 
+PLOT_VELOCITY = "pv"
+
 TYPE_SECOND = "secondly"
 TYPE_MINUTE = "minutely"
 TYPE_HOUR = "hourly"
@@ -187,6 +189,63 @@ def plot_launches(filename, type):
     plt.gca().xaxis.set_tick_params(rotation = 30)
     plt.show()
 
+def plot_velocity_for_launch(filename, launch_date):
+    # Extracting velocities, we do not care about positions here
+    f = open(filename, 'r')
+    velocities = []
+    times = []
+
+    particle_index = 0
+    launch_index = -1
+    time_index = 0
+
+    for line in f:
+        data = line.rstrip("\n").split(" ")
+        if len(data) == 1:
+            time = float(data[0])
+            times.append(time)
+            particle_index = 0
+            if time >= launch_date and launch_index < 0:
+                launch_index = time_index
+            time_index += 1
+        else:
+            # If it is the ship
+            if particle_index == 3:
+                data = [float(x) for x in data]
+                v_mod = math.sqrt((data[2] * data[2]) + (data[3] * data[3]))
+                velocities.append(v_mod)
+            particle_index += 1
+
+    f.close()
+
+    # Keeping only the data after the launch
+    velocities = velocities[launch_index + 1:]
+    times = times[launch_index + 1:]
+
+    #dates = [(INITIAL_DATE + datetime.timedelta(seconds=t)).strftime('%Y-%m-%d %H:%M:%S') for t in times]
+    dates = [(INITIAL_DATE + datetime.timedelta(seconds=t)).strftime('%Y-%m-%d %H:%M:%S') for t in times]
+    x_values = [datetime.datetime.strptime(d,"%Y-%m-%d %H:%M:%S") for d in dates]
+    y_values = velocities
+
+    ax = plt.gca()
+    formatter = mdates.DateFormatter("%d-%m-%Y")
+    ax.xaxis.set_major_formatter(formatter)
+    locator = mdates.DayLocator()
+    ax.xaxis.set_major_locator(locator)
+    plt.scatter(x_values, y_values, color="red")
+    # Removes the scientific notation on top
+    # https://stackoverflow.com/questions/28371674/prevent-scientific-notation-in-matplotlib-pyplot
+    ax.ticklabel_format(style='plain', axis='y')
+    # Format the date into months & days
+    # Change the tick interval
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%Y'))
+    plt.gca().xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+    plt.gca().set_ylabel("Módulo de la Velocidad [km/s]")
+    plt.gca().set_xlabel("Fecha [mes-año]")
+     # Puts x-axis labels on an angle
+    plt.gca().xaxis.set_tick_params(rotation = 30)
+    plt.show()
+
 # main() function
 def main():
     # Command line args are in sys.argv[1], sys.argv[2] ..
@@ -196,12 +255,14 @@ def main():
 
     # add arguments
     parser.add_argument('-l', dest='launch_delta', required=True)
-    parser.add_argument('-t', dest='process_type', required=True)
+    parser.add_argument('-t', dest='process_type', required=False)
     args = parser.parse_args()
 
     launch_delta = float(args.launch_delta)
 
-    if args.process_type == EXTRACT_SECONDLY_LAUNCH:
+    if args.process_type == PLOT_VELOCITY:
+        plot_velocity_for_launch(INPUT_FILE, launch_delta)
+    elif args.process_type == EXTRACT_SECONDLY_LAUNCH:
         extract_launch(INPUT_FILE, launch_delta, DISTANCES_SECONDLY_FILE)
     elif args.process_type == EXTRACT_MINUTELY_LAUNCH:
         extract_launch(INPUT_FILE, launch_delta, DISTANCES_MINUTELY_FILE)
