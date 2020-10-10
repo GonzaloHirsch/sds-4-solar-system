@@ -12,14 +12,33 @@ import datetime
 
 # Files
 INPUT_FILE = "./parsable_files/output.txt"
-DISTANCES_FILE = "./parsable_files/launch_distances.txt"
+DISTANCES_SECONDLY_FILE = "./parsable_files/launch_distances_secondly.txt"
+DISTANCES_MINUTELY_FILE = "./parsable_files/launch_distances_minutely.txt"
+DISTANCES_HOURLY_FILE = "./parsable_files/launch_distances_hourly.txt"
+DISTANCES_DAILY_FILE = "./parsable_files/launch_distances_daily.txt"
+DISTANCES_WEEKLY_FILE = "./parsable_files/launch_distances_weekly.txt"
 
 # Variables
 INITIAL_DATE = datetime.datetime(2020, 9, 28)
 
 # Type variables
-EXTRACT_LAUNCH = "el"
-PLOT_LAUNCH = "pl"
+EXTRACT_SECONDLY_LAUNCH = "els"
+EXTRACT_MINUTELY_LAUNCH = "elm"
+EXTRACT_HOURLY_LAUNCH = "elh"
+EXTRACT_DAILY_LAUNCH = "eld"
+EXTRACT_WEEKLY_LAUNCH = "elw"
+
+PLOT_SECONDLY_LAUNCH = "pls"
+PLOT_MINUTELY_LAUNCH = "plm"
+PLOT_HOURLY_LAUNCH = "plh"
+PLOT_DAILY_LAUNCH = "pld"
+PLOT_WEEKLY_LAUNCH = "plw"
+
+TYPE_SECOND = "secondly"
+TYPE_MINUTE = "minutely"
+TYPE_HOUR = "hourly"
+TYPE_DAY = "dayly"
+TYPE_WEEK = "weekly"
 
 # Given the data of the simulation
 def extract_launch(filename, launch, outfilename):
@@ -84,7 +103,7 @@ def extract_launch(filename, launch, outfilename):
 # Plots the distances to mars for each launch
 # https://www.kite.com/python/answers/how-to-plot-dates-on-the-x-axis-of-a-matplotlib-plot-in-python
 # https://stackoverflow.com/questions/21423158/how-do-i-change-the-range-of-the-x-axis-with-datetimes-in-matplotlib
-def plot_launches(filename):
+def plot_launches(filename, type):
     f = open(filename, 'r')
     dates = []
     times = []
@@ -102,24 +121,68 @@ def plot_launches(filename):
 
     min_index = np.argmin(distances)
     print("Minimum distance to Mars achieved:")
-    print("\tLaunch Day:", dates[min_index], "(" + str(launches[min_index]) + "[s])")
-    print("\tArrival day:", (INITIAL_DATE + datetime.timedelta(seconds=times[min_index])).strftime('%Y-%m-%d') + "[s]")
+    print("\tLaunch Day:", (INITIAL_DATE + datetime.timedelta(seconds=launches[min_index])).strftime('%Y-%m-%d %H:%M:%S') , "(" + str(launches[min_index]) + "[s])")
+    print("\tArrival day:", (INITIAL_DATE + datetime.timedelta(seconds=times[min_index])).strftime('%Y-%m-%d %H:%M:%S') + "[s]")
     print("\tTime of Flight:", str(times[min_index]) + "[s]")
     print("\tDistance to Mars:", str(distances[min_index]) + "[km]")
 
-    x_values = [datetime.datetime.strptime(d,"%Y-%m-%d").date() for d in dates]
-    y_values = distances
+    if type == TYPE_MINUTE or type == TYPE_SECOND:
+        date_index = 0
+        x_values = []
+        for i in range(len(launches)):
+            sub_date = INITIAL_DATE + datetime.timedelta(seconds=launches[i])
+            x_values.append(sub_date)
+        y_values = distances
+    elif type == TYPE_DAY:
+        x_values = [datetime.datetime.strptime(d,"%Y-%m-%d").date() for d in dates]
+        y_values = distances
+    elif type == TYPE_WEEK:
+        x_values = [datetime.datetime.strptime(d,"%Y-%m-%d").date() for d in dates]
+        y_values = distances
 
     ax = plt.gca()
     formatter = mdates.DateFormatter("%d-%m-%Y")
     ax.xaxis.set_major_formatter(formatter)
     locator = mdates.DayLocator()
     ax.xaxis.set_major_locator(locator)
-    plt.scatter(x_values, y_values)
+    plt.scatter(x_values, y_values, color="red")
+    # Removes the scientific notation on top
+    # https://stackoverflow.com/questions/28371674/prevent-scientific-notation-in-matplotlib-pyplot
+    ax.ticklabel_format(style='plain', axis='y')
     # Format the date into months & days
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
     # Change the tick interval
-    plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=30))
+
+    if type == TYPE_SECOND:
+        interval = 15
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
+        plt.gca().xaxis.set_major_locator(mdates.SecondLocator(interval=interval))
+        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_xlabel("Fecha de Despegue [" + dates[0] + "]")
+    elif type == TYPE_MINUTE:
+        interval = 10
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
+        plt.gca().xaxis.set_major_locator(mdates.MinuteLocator(interval=interval))
+        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_xlabel("Fecha de Despegue [" + dates[0] + "]")
+    elif type == TYPE_HOUR:
+        interval = 4
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d %H:%M'))
+        plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=interval))
+        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_xlabel("Fecha de Despegue [Año " + dates[0].split("-")[0] + "]")
+    elif type == TYPE_DAY:
+        interval = 2
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
+        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=interval))
+        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_xlabel("Fecha de Despegue [Año " + dates[0].split("-")[0] + "]")
+    elif type == TYPE_WEEK:
+        # https://stackoverflow.com/questions/46555819/months-as-axis-ticks
+        interval = 2
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%Y'))
+        plt.gca().xaxis.set_major_locator(mdates.MonthLocator(interval=interval))
+        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_xlabel("Fecha de Despegue")
     # Puts x-axis labels on an angle
     plt.gca().xaxis.set_tick_params(rotation = 30)
     plt.show()
@@ -138,10 +201,26 @@ def main():
 
     launch_delta = float(args.launch_delta)
 
-    if args.process_type == EXTRACT_LAUNCH:
-        extract_launch(INPUT_FILE, launch_delta, DISTANCES_FILE)
-    elif args.process_type == PLOT_LAUNCH:
-        plot_launches(DISTANCES_FILE)
+    if args.process_type == EXTRACT_SECONDLY_LAUNCH:
+        extract_launch(INPUT_FILE, launch_delta, DISTANCES_SECONDLY_FILE)
+    elif args.process_type == EXTRACT_MINUTELY_LAUNCH:
+        extract_launch(INPUT_FILE, launch_delta, DISTANCES_MINUTELY_FILE)
+    elif args.process_type == EXTRACT_HOURLY_LAUNCH:
+        extract_launch(INPUT_FILE, launch_delta, DISTANCES_HOURLY_FILE)
+    if args.process_type == EXTRACT_DAILY_LAUNCH:
+        extract_launch(INPUT_FILE, launch_delta, DISTANCES_DAILY_FILE)
+    elif args.process_type == EXTRACT_WEEKLY_LAUNCH:
+        extract_launch(INPUT_FILE, launch_delta, DISTANCES_WEEKLY_FILE)
+    elif args.process_type == PLOT_SECONDLY_LAUNCH:
+        plot_launches(DISTANCES_SECONDLY_FILE, TYPE_SECOND)
+    elif args.process_type == PLOT_MINUTELY_LAUNCH:
+        plot_launches(DISTANCES_MINUTELY_FILE, TYPE_MINUTE)
+    elif args.process_type == PLOT_HOURLY_LAUNCH:
+        plot_launches(DISTANCES_HOURLY_FILE, TYPE_HOUR)
+    elif args.process_type == PLOT_DAILY_LAUNCH:
+        plot_launches(DISTANCES_DAILY_FILE, TYPE_DAY)
+    elif args.process_type == PLOT_WEEKLY_LAUNCH:
+        plot_launches(DISTANCES_WEEKLY_FILE, TYPE_WEEK)
 
 # call main
 if __name__ == '__main__':

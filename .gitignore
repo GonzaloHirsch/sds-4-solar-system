@@ -104,3 +104,13 @@ parsable_files/output.txt
 parsable_files/verlet.txt
 
 parsable_files/launch_distances.txt
+
+parsable_files/launch_distances_weekly.txt
+
+parsable_files/launch_distances_daily.txt
+
+parsable_files/launch_distances_hourly.txt
+
+parsable_files/launch_distances_minutely.txt
+
+parsable_files/launch_distances_secondly.txt
