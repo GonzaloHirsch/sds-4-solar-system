@@ -32,35 +32,41 @@ public class Integrator {
     /////////////////////////////////////////////////////////////////////////////////////
 
     public void beeman(Particle p, Force f, double dt) {
-        /* Calculating force components */
-        f.evaluate(p.getX(), p.getY(), p.getVx(), p.getVy());
-
-        /* Calculating future accelerations */
-        double predictedAx = f.getFx() / p.getMass();
-        double predictedAy = f.getFy() / p.getMass();
-
         /* Predicting positions */
         double predictedX = this.beemanPositionPrediction(p.getX(), p.getVx(), p.getAx(), p.getPrevAx(), dt);
         double predictedY = this.beemanPositionPrediction(p.getY(), p.getVy(), p.getAy(), p.getPrevAy(), dt);
 
         /* Predicting velocities */
-        double predictedVx = this.beemanVelocityPrediction(p.getVx(), p.getAx(), p.getPrevAx(), predictedAx, dt);
-        double predictedVy = this.beemanVelocityPrediction(p.getVy(), p.getAy(), p.getPrevAy(), predictedAy, dt);
+        double predictedVx = this.beemanVelocityPrediction(p.getVx(), p.getAx(), p.getPrevAx(), dt);
+        double predictedVy = this.beemanVelocityPrediction(p.getVy(), p.getAy(), p.getPrevAy(), dt);
+
+        /* Calculating force components */
+        f.evaluate(predictedX, predictedY, predictedVx, predictedVy);
+        double predictedAx = f.getFx() / p.getMass();
+        double predictedAy = f.getFy() / p.getMass();
+
+        /* Correcting velocities */
+        double correctedVx = this.beemanVelocityCorrected(p.getVx(), p.getAx(), p.getPrevAx(), predictedAx, dt);
+        double correctedVy = this.beemanVelocityCorrected(p.getVy(), p.getAy(), p.getPrevAy(), predictedAy,dt);
 
         /* Set particles future predictions */
         p.setFutureX(predictedX);
         p.setFutureY(predictedY);
-        p.setFutureVx(predictedVx);
-        p.setFutureVy(predictedVy);
+        p.setFutureVx(correctedVx);
+        p.setFutureVy(correctedVy);
         p.setFutureAx(predictedAx);
         p.setFutureAy(predictedAy);
     }
 
     private double beemanPositionPrediction(double r, double v, double a, double aPrev, double dt) {
-        return r + v*dt + (2.0/3.0)*a*dt*dt + (1.0/6.0)*aPrev*dt*dt;
+        return r + v*dt + (2.0/3.0)*a*dt*dt - (1.0/6.0)*aPrev*dt*dt;
     }
 
-    private double beemanVelocityPrediction(double v, double a, double aPrev, double aFuture, double dt) {
+    private double beemanVelocityPrediction(double v, double a, double aPrev, double dt) {
+        return v + ((3.0/2.0)*a - (1.0/2.0)*aPrev) * dt;
+    }
+
+    private double beemanVelocityCorrected(double v, double a, double aPrev, double aFuture, double dt) {
         return v + ((1.0/3.0)*aFuture + (5.0/6.0)*a - (1.0/6.0)*aPrev) * dt;
     }
 
