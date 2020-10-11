@@ -128,7 +128,7 @@ def plot_launches(filename, type):
     print("\tTime of Flight:", str(times[min_index]) + "[s]")
     print("\tDistance to Mars:", str(distances[min_index]) + "[km]")
 
-    if type == TYPE_MINUTE or type == TYPE_SECOND:
+    if type == TYPE_MINUTE or type == TYPE_SECOND or type == TYPE_HOUR:
         date_index = 0
         x_values = []
         for i in range(len(launches)):
@@ -155,7 +155,7 @@ def plot_launches(filename, type):
     # Change the tick interval
 
     if type == TYPE_SECOND:
-        interval = 15
+        interval = 1
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
         plt.gca().xaxis.set_major_locator(mdates.SecondLocator(interval=interval))
         plt.gca().set_ylabel("Distancia a Marte [km]")
@@ -254,11 +254,12 @@ def main():
     parser = argparse.ArgumentParser(description="Post processing for the points data to generate data statistics")
 
     # add arguments
-    parser.add_argument('-l', dest='launch_delta', required=True)
-    parser.add_argument('-t', dest='process_type', required=False)
+    parser.add_argument('-l', dest='launch_delta', required=False)
+    parser.add_argument('-t', dest='process_type', required=True)
     args = parser.parse_args()
 
-    launch_delta = float(args.launch_delta)
+    if args.launch_delta != None:
+        launch_delta = float(args.launch_delta)
 
     if args.process_type == PLOT_VELOCITY:
         plot_velocity_for_launch(INPUT_FILE, launch_delta)
