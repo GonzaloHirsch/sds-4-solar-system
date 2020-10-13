@@ -36,29 +36,6 @@ public class Particle implements Comparable<Particle> {
     //                                        CONSTRUCTORS
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    public Particle (
-            int id, double radius, double mass,
-            double x, double y, double prevX, double prevY,
-            double vx, double vy, double prevVx, double prevVy,
-            double ax, double ay, double prevAx, double prevAy
-    ) {
-        this.id     = id;
-        this.radius = radius;
-        this.mass   = mass;
-        this.x      = x;
-        this.y      = y;
-        this.prevX  = prevX;
-        this.prevY  = prevY;
-        this.vx     = vx;
-        this.vy     = vy;
-        this.prevVx = prevVx;
-        this.prevVy = prevVy;
-        this.ax     = ax;
-        this.ay     = ay;
-        this.prevAx = prevAx;
-        this.prevAy = prevAy;
-    }
-
     public Particle(int id, double radius, double mass) {
         this.id     = id;
         this.radius = radius;
@@ -114,22 +91,6 @@ public class Particle implements Comparable<Particle> {
         return vy;
     }
 
-    public double getPrevVx() {
-        return prevVx;
-    }
-
-    public double getPrevVy() {
-        return prevVy;
-    }
-
-    public double getFutureVx() {
-        return futureVx;
-    }
-
-    public double getFutureVy() {
-        return futureVy;
-    }
-
     public double getAx() {
         return ax;
     }
@@ -146,28 +107,12 @@ public class Particle implements Comparable<Particle> {
         return prevAy;
     }
 
-    public double getFutureAx() {
-        return futureAx;
-    }
-
-    public double getFutureAy() {
-        return futureAy;
-    }
-
     //////////////////////////////////////////////////////////////////////////////////////////
     //                                        SETTERS
     //////////////////////////////////////////////////////////////////////////////////////////
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void setRadius(double radius) {
         this.radius = radius;
-    }
-
-    public void setMass(double mass) {
-        this.mass = mass;
     }
 
     public void setX(double x) {
@@ -224,22 +169,6 @@ public class Particle implements Comparable<Particle> {
 
     public void setPrevY(double prevY) {
         this.prevY = prevY;
-    }
-
-    public void setPrevVx(double prevVx) {
-        this.prevVx = prevVx;
-    }
-
-    public void setPrevVy(double prevVy) {
-        this.prevVy = prevVy;
-    }
-
-    public void setPrevAx(double prevAx) {
-        this.prevAx = prevAx;
-    }
-
-    public void setPrevAy(double prevAy) {
-        this.prevAy = prevAy;
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////

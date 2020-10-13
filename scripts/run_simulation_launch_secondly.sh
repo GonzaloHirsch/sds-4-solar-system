@@ -3,7 +3,7 @@
 launch_base=57447360
 
 #!/bin/bash
-for i in {-20..-10}
+for i in {-6..10}
 do
   launch=$(( i + launch_base ))
   echo "Second $i, launch at $launch"

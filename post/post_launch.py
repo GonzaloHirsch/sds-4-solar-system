@@ -42,6 +42,8 @@ TYPE_HOUR = "hourly"
 TYPE_DAY = "dayly"
 TYPE_WEEK = "weekly"
 
+MARS_RADIUS = 3389.92
+
 # Given the data of the simulation
 def extract_launch(filename, launch, outfilename):
     # Extracting the positions and velocities
@@ -117,7 +119,10 @@ def plot_launches(filename, type):
         dates.append(data[0])
         launches.append(float(data[1]))
         times.append(float(data[2]))
-        distances.append(float(data[3]))
+        distance = float(data[3]) - MARS_RADIUS
+        if distance < 0:
+            distance = 0
+        distances.append(distance)
 
     f.close()
 
@@ -155,35 +160,35 @@ def plot_launches(filename, type):
     # Change the tick interval
 
     if type == TYPE_SECOND:
-        interval = 1
+        interval = 15
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
         plt.gca().xaxis.set_major_locator(mdates.SecondLocator(interval=interval))
-        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_ylabel("Distancia a Superficie de Marte [km]")
         plt.gca().set_xlabel("Fecha de Despegue [" + dates[0] + "]")
     elif type == TYPE_MINUTE:
         interval = 10
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M:%S'))
         plt.gca().xaxis.set_major_locator(mdates.MinuteLocator(interval=interval))
-        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_ylabel("Distancia a Superficie de Marte [km]")
         plt.gca().set_xlabel("Fecha de Despegue [" + dates[0] + "]")
     elif type == TYPE_HOUR:
         interval = 4
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%d %H:%M'))
         plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=interval))
-        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_ylabel("Distancia a Superficie de Marte [km]")
         plt.gca().set_xlabel("Fecha de Despegue [Año " + dates[0].split("-")[0] + "]")
     elif type == TYPE_DAY:
         interval = 2
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d-%m'))
         plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=interval))
-        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_ylabel("Distancia a Superficie de Marte [km]")
         plt.gca().set_xlabel("Fecha de Despegue [Año " + dates[0].split("-")[0] + "]")
     elif type == TYPE_WEEK:
         # https://stackoverflow.com/questions/46555819/months-as-axis-ticks
         interval = 2
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%Y'))
         plt.gca().xaxis.set_major_locator(mdates.MonthLocator(interval=interval))
-        plt.gca().set_ylabel("Distancia a Marte [km]")
+        plt.gca().set_ylabel("Distancia a Superficie de Marte [km]")
         plt.gca().set_xlabel("Fecha de Despegue")
     # Puts x-axis labels on an angle
     plt.gca().xaxis.set_tick_params(rotation = 30)
