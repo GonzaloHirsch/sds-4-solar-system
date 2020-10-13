@@ -1,6 +1,7 @@
+package app;
+
 import org.apache.commons.cli.*;
 
-// TODO: HACER ESTO Y DEFINIR OPCIONES
 public class OptionsParser {
     protected static RunOptions option;
     protected static NumericalOptions numericalOption;
@@ -144,7 +145,7 @@ public class OptionsParser {
      */
     private static void help(Options options) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("Main", options);
+        formatter.printHelp("app.Main", options);
         System.exit(0);
     }
 

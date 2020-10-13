@@ -1,3 +1,5 @@
+package oscillator;
+
 public interface Force {
     double getFx();
     double getFy();

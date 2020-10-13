@@ -1,3 +1,7 @@
+package solar_system;
+
+import app.Constants;
+import app.Particle;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -35,7 +39,7 @@ public class SolarSystemSimulation {
     private final Map<Integer, double[][]> gearDerivatives = new HashMap<>();
     private final Map<Integer, double[][]> gearPredictions = new HashMap<>();
 
-    // Constants for the indexes in the gear data
+    // app.Constants for the indexes in the gear data
     private static final int X_VALUES = 0;
     private static final int Y_VALUES = 1;
 
@@ -343,23 +347,10 @@ public class SolarSystemSimulation {
      * off and update the particle
      */
     private void updateShipForBlastoff() {
-        double[] values = updateShip(this.shipInitialVelocity);
-
-        // Updating gear derivatives
-        // This case only happens when the blastoff time is 0, because it initializes before the gear derivatives and can throw Null Pointer
-        // FIXME: Ver si podemos modularizarlo mejor esto
-//        if (this.gearDerivatives.containsKey(Constants.SHIP_INDEX)){
-//            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][0] = values[0];
-//            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][0] = values[1];
-//            this.gearDerivatives.get(Constants.SHIP_INDEX)[X_VALUES][1] = values[2];
-//            this.gearDerivatives.get(Constants.SHIP_INDEX)[Y_VALUES][1] = values[3];
-//        }
+        updateShip(this.shipInitialVelocity);
 
         double[][] derivatives = calculateInitialGearDerivatives(this.particles[Constants.SHIP_INDEX]);
         this.gearDerivatives.put(Constants.SHIP_INDEX, derivatives);
-
-/*        System.out.println("----------------------\nDerivatives");
-        System.out.println(Arrays.deepToString(this.gearDerivatives.get(Constants.SHIP_INDEX)));*/
 
         this.isInFlight = true;
     }
@@ -368,7 +359,7 @@ public class SolarSystemSimulation {
         updateShip(0.0);
     }
 
-    private double[] updateShip(double initialVelocity) {
+    private void updateShip(double initialVelocity) {
         Particle earth = this.particles[1];
 
         double earthDistanceToSun = Math.sqrt(Math.pow(earth.getX(), 2) + Math.pow(earth.getY(), 2));
@@ -385,8 +376,6 @@ public class SolarSystemSimulation {
         this.particles[Constants.SHIP_INDEX].setY(y);
         this.particles[Constants.SHIP_INDEX].setVx(vx);
         this.particles[Constants.SHIP_INDEX].setVy(vy);
-
-        return new double[]{x, y, vx, vy};
     }
 
 }

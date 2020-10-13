@@ -30,7 +30,7 @@
                             <archive>
                                 <manifest>
                                     <mainClass>
-                                        Main
+                                        app.Main
                                     </mainClass>
                                 </manifest>
                             </archive>

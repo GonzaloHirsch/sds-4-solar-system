@@ -1,3 +1,7 @@
+package oscillator;
+
+import app.Particle;
+
 public class OscillatorSimulation {
 
     private static final double MASS  = 70;             // kg

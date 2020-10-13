@@ -1,3 +1,5 @@
+package oscillator;
+
 public class OscilatorForce implements Force {
     private final double gamma;
     private final double k;

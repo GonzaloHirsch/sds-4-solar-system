@@ -1,3 +1,5 @@
+package app;
+
 public class Particle implements Comparable<Particle> {
     //////////////////////////////////////////////////////////////////////////////////////////
     //                                        PROPERTIES
@@ -190,7 +192,7 @@ public class Particle implements Comparable<Particle> {
 
     @Override
     public String toString() {
-        return String.format("[Particle #%d] {x = %f, y = %f, radius = %f, mass = %f}\n",
+        return String.format("[app.Particle #%d] {x = %f, y = %f, radius = %f, mass = %f}\n",
                 this.id,
                 this.x,
                 this.y,

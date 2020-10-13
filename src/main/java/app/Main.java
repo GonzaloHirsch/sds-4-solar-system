@@ -1,11 +1,14 @@
+package app;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import oscillator.OscillatorSimulation;
+import solar_system.SolarSystemSimulation;
 
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -99,7 +102,7 @@ public class Main {
         }
 
         // Generating the output
-        GenerateOutputFileForSolarSystem(results, SIMULATION_FILE);
+        GenerateOutputFileForSolarSystem(results);
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
@@ -131,9 +134,9 @@ public class Main {
         }
     }
 
-    private static void GenerateOutputFileForSolarSystem(List<ImmutablePair<Double, double[][]>> results, String filename){
+    private static void GenerateOutputFileForSolarSystem(List<ImmutablePair<Double, double[][]>> results){
         try {
-            BufferedWriter bf = new BufferedWriter(new FileWriter(filename, false));
+            BufferedWriter bf = new BufferedWriter(new FileWriter(Main.SIMULATION_FILE, false));
 
             for (ImmutablePair<Double, double[][]> pair : results){
                 // Adding the time
