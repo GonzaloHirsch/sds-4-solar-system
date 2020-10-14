@@ -307,14 +307,14 @@ This is obtained by running:
 Analyzing secondly launch dates in a 2-minute range given by the previous date, we obtain:
 ```
 Minimum distance to Mars achieved:
-	Launch Day: 2022-07-24 21:35:40 (57447340.0[s])
+	Launch Day: 2022-07-24 21:35:50 (57447350.0[s])
 	Arrival day: 2023-05-02 02:00:00[s]
 	Time of Flight: 81741600.0[s]
-	Distance to Mars: 2577.461178242103[km]
+	Distance to Mars: 0[km]
 ```
 This is obtained by running:
 ```
-./scripts/run_simulation_launch_secondly.sh 1 1200 126144000 ws 4
+./scripts/run_simulation_launch_secondly.sh 1 1200 126144000 ws 461148518
 ```
 
 Animation was generated with:
