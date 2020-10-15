@@ -79,11 +79,13 @@ public class Integrator {
     /////////////////////////////////////////////////////////////////////////////////////
 
     public double[] eulerPrediction(Particle p, Force f, double dt) {
-        double predictedX = p.getX() + p.getVx() * dt + (dt * dt)/2 * p.getAx();
-        double predictedY = p.getY() + p.getVy() * dt + (dt * dt)/2 * p.getAy();
-
+        // Calculating next velocity
         double predictedVx = p.getVx() + p.getAx() * dt;
         double predictedVy = p.getVy() + p.getAy() * dt;
+
+        // Calculating next position
+        double predictedX = p.getX() + predictedVx * dt + (dt * dt)/2 * p.getAx();
+        double predictedY = p.getY() + predictedVy * dt + (dt * dt)/2 * p.getAy();
 
         f.evaluate(predictedX, predictedY, predictedVx, predictedVy);
 
@@ -91,10 +93,10 @@ public class Integrator {
 
         calculations[0] = f.getFx() / p.getMass();          // Ax(t+dt)
         calculations[1] = f.getFy() / p.getMass();          // Ay(t+dt)
-        calculations[2] = p.getVx() + calculations[0] * dt; // Vx(t+dt)
-        calculations[3] = p.getVy() + calculations[1] * dt; // Vy(t+dt)
-        calculations[4] = p.getX()  + calculations[2] * dt; // X(t+dt)
-        calculations[5] = p.getY()  + calculations[3] * dt; // Y(t+dt)
+        calculations[2] = predictedVx; // Vx(t+dt)
+        calculations[3] = predictedVy; // Vy(t+dt)
+        calculations[4] = predictedX; // X(t+dt)
+        calculations[5] = predictedY; // Y(t+dt)
 
         return calculations;        
     }
