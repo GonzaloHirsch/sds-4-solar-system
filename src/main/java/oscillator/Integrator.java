@@ -97,7 +97,7 @@ public class Integrator {
         calculations[4] = p.getX()  + calculations[2] * dt; // X(t+dt)
         calculations[5] = p.getY()  + calculations[3] * dt; // Y(t+dt)
 
-        return calculations;        
+        return calculations;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////
