@@ -34,8 +34,12 @@ def plot_oscillator_graphs():
     for file in file_information:
         plain_filename = file.rstrip("\t\n").split("/")[2]
         name = plain_filename.split(".")[0]
+        if name == 'analytic':
+            name = 'analítico'
         plt.plot(file_information[file][0], file_information[file][1], 'o', label=name, markersize=2)
 
+    plt.gca().set_xlabel("Tiempo [s]")
+    plt.gca().set_ylabel("Posición de la partícula [m]")
     plt.legend()
     plt.show()
 

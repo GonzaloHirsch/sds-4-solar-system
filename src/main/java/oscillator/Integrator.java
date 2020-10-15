@@ -79,8 +79,8 @@ public class Integrator {
     /////////////////////////////////////////////////////////////////////////////////////
 
     public double[] eulerPrediction(Particle p, Force f, double dt) {
-        double predictedX = p.getX() + p.getVx() * dt;
-        double predictedY = p.getY() + p.getVy() * dt;
+        double predictedX = p.getX() + p.getVx() * dt + (dt * dt)/2 * p.getAx();
+        double predictedY = p.getY() + p.getVy() * dt + (dt * dt)/2 * p.getAy();
 
         double predictedVx = p.getVx() + p.getAx() * dt;
         double predictedVy = p.getVy() + p.getAy() * dt;
