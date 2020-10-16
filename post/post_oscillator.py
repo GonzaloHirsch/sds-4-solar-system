@@ -55,7 +55,7 @@ def extract_errors():
     for file in file_information:
         if file != ANALYTIC_FILE:
             e = np.subtract(file_information[ANALYTIC_FILE][1], file_information[file][1])**2
-            errors[file] = np.sum(e)
+            errors[file] = np.sum(e) / len(e)
 
     return errors
 
